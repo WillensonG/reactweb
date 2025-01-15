@@ -279,7 +279,7 @@ const AboutUs = () => {
             </p>
             <div className="flex justify-center gap-4">
               <motion.a
-                href="#"
+                href="https://github.com/WillensonG"
                 className="bg-purple-900/30 p-3 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
@@ -287,7 +287,7 @@ const AboutUs = () => {
                 <Github size={24} />
               </motion.a>
               <motion.a
-                href="#"
+                href="https://www.linkedin.com/in/willens%C3%B3n-rafael-guill%C3%A9n-inirio/"
                 className="bg-purple-900/30 p-3 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
@@ -295,7 +295,7 @@ const AboutUs = () => {
                 <Linkedin size={24} />
               </motion.a>
               <motion.a
-                href="mailto:contact@example.com"
+                href="mailto:Willensonr.g@gmail.com"
                 className="bg-purple-900/30 p-3 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
@@ -303,7 +303,7 @@ const AboutUs = () => {
                 <Mail size={24} />
               </motion.a>
               <motion.a
-                href="#"
+                href="https://www.instagram.com/web_solutionsrd/"
                 className="bg-purple-900/30 p-3 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}

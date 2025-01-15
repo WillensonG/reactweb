@@ -210,14 +210,14 @@ const BentoPortfolio = () => {
                     <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
                       <div className="flex gap-3">
                         <motion.a
-                          href="#"
+                          href="https://github.com/WillensonG"
                           className="bg-purple-600/90 p-2 rounded-full"
                           whileHover={{ scale: 1.1 }}
                         >
                           <Github size={20} />
                         </motion.a>
                         <motion.a
-                          href="#"
+                          href="https://github.com/WillensonG"
                           className="bg-purple-600/90 p-2 rounded-full"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -292,7 +292,7 @@ const BentoPortfolio = () => {
               </h3>
               <div className="space-y-4">
                 <motion.a
-                  href="#"
+                  href="https://github.com/WillensonG"
                   className="flex items-center gap-3 text-purple-200 hover:text-purple-300 transition-colors"
                   whileHover={{ x: 5 }}
                 >
@@ -300,7 +300,7 @@ const BentoPortfolio = () => {
                   <span>GitHub</span>
                 </motion.a>
                 <motion.a
-                  href="#"
+                  href="https://www.linkedin.com/in/willens%C3%B3n-rafael-guill%C3%A9n-inirio/"
                   className="flex items-center gap-3 text-purple-200 hover:text-purple-300 transition-colors"
                   whileHover={{ x: 5 }}
                 >
@@ -308,7 +308,7 @@ const BentoPortfolio = () => {
                   <span>LinkedIn</span>
                 </motion.a>
                 <motion.a
-                  href="mailto:contact@example.com"
+                  href="mailto:willensonr.g@gmail.com"
                   className="flex items-center gap-3 text-purple-200 hover:text-purple-300 transition-colors"
                   whileHover={{ x: 5 }}
                 >
@@ -353,7 +353,7 @@ const BentoPortfolio = () => {
                 transition={{ delay: 0.2 }}
               >
                 <motion.a
-                  href="#"
+                  href="https://github.com/WillensonG"
                   className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
@@ -361,7 +361,7 @@ const BentoPortfolio = () => {
                   <Github size={20} />
                 </motion.a>
                 <motion.a
-                  href="#"
+                  href="https://www.linkedin.com/in/willens%C3%B3n-rafael-guill%C3%A9n-inirio/"
                   className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
@@ -369,7 +369,7 @@ const BentoPortfolio = () => {
                   <Linkedin size={20} />
                 </motion.a>
                 <motion.a
-                  href="mailto:contact@example.com"
+                  href="mailto:willensonr.g@gmail.com"
                   className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
@@ -430,7 +430,7 @@ const BentoPortfolio = () => {
               >
                 <p className="flex items-center gap-3 text-purple-200/70">
                   <Mail size={16} />
-                  contact@example.com
+                  Willensonr.g@gmailcom
                 </p>
                 <p className="flex items-center gap-3 text-purple-200/70">
                   <span className="inline-block">📍</span>
