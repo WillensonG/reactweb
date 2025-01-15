@@ -1,10 +1,19 @@
-import LandingPage from "./components/LandingPages";
-import { motion } from "framer-motion";
-import "./index.css";
-import Portfolio from "./components/LandingPages";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BentoPortfolio from "./components/LandingPages";
-function App() {
-  return <BentoPortfolio />;
-}
+import AboutUs from "./components/AboutUs";
+import ProjectsPage from "./components/projectsPage";
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<BentoPortfolio />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;

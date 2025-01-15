@@ -7,13 +7,13 @@ import {
   ExternalLink,
   Download,
   Code,
-  CheckCircle,
-  Star,
-  Sparkles,
+  Menu,
+  X,
 } from "lucide-react";
 
 const BentoPortfolio = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -45,13 +45,6 @@ const BentoPortfolio = () => {
       imageUrl: "/api/placeholder/400/250",
       size: "small",
     },
-    {
-      title: "📊 Dashboard Analítico",
-      description: "Panel de control interactivo para visualización de datos",
-      tags: ["⚛️ React", "📈 D3.js"],
-      imageUrl: "/api/placeholder/400/250",
-      size: "large",
-    },
   ];
 
   const skillsData = [
@@ -66,149 +59,184 @@ const BentoPortfolio = () => {
       level: 80,
       color: "from-purple-400 to-purple-600",
     },
-    {
-      name: "🐍 Python",
-      level: 70,
-      color: "from-green-400 to-green-600",
-    },
+    { name: "🐍 Python", level: 70, color: "from-green-400 to-green-600" },
   ];
+
+  const navItems = [
+    { name: "Inicio", href: "#home" },
+    { name: "Sobre Mí", href: "/about" },
+    { name: "Proyectos", href: "/projects" },
+    { name: "Habilidades", href: "#skills" },
+    { name: "Contacto", href: "#contact" },
+  ];
+
+  const Navigation = () => (
+    <motion.nav
+      className={`fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-purple-500/20
+        ${scrollY > 50 ? "shadow-lg shadow-purple-500/10" : ""}`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="flex justify-between items-center">
+          <motion.a
+            href="#"
+            className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400"
+            whileHover={{ scale: 1.05 }}
+          >
+            WR
+          </motion.a>
+
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item, index) => (
+              <motion.a
+                key={index}
+                href={item.href}
+                className="text-purple-200/80 hover:text-purple-200 transition-colors"
+                whileHover={{ y: -2 }}
+              >
+                {item.name}
+              </motion.a>
+            ))}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-purple-600 to-violet-600 px-4 py-2 rounded-xl flex items-center gap-2 text-sm"
+            >
+              Contactar ✨
+            </motion.button>
+          </div>
+
+          <motion.button
+            className="md:hidden text-purple-200 p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
+        </div>
+
+        <motion.div
+          className={`md:hidden ${isMenuOpen ? "block" : "hidden"}`}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : -20 }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="py-4 space-y-4">
+            {navItems.map((item, index) => (
+              <motion.a
+                key={index}
+                href={item.href}
+                className="block text-purple-200/80 hover:text-purple-200 py-2 transition-colors"
+                whileHover={{ x: 5 }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </motion.nav>
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Hero Bento Section */}
-      <section className="py-12 px-4 md:py-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {/* Profile Card - Spans 2 columns */}
-            <motion.div
-              className="md:col-span-2 bg-gradient-to-br from-purple-900/50 to-violet-900/50 rounded-3xl p-8 border border-purple-500/20"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="relative group">
-                  <motion.img
-                    src="/api/placeholder/150/150"
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full border-4 border-purple-500/30 group-hover:border-purple-500/50 transition-colors duration-300"
-                    whileHover={{ scale: 1.05, rotate: 5 }}
-                  />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-violet-500/20 animate-pulse" />
-                </div>
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400">
-                    Willenson Rafael
-                    <motion.span
-                      animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
-                      transition={{
-                        duration: 2.5,
-                        repeat: Infinity,
-                        repeatDelay: 1,
-                      }}
-                      className="inline-block ml-2"
-                    >
-                      👋
-                    </motion.span>
-                  </h1>
-                  <p className="text-purple-200 text-lg mb-6">
-                    Desarrollador web creativo y apasionado
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-gradient-to-r from-purple-600 to-violet-600 px-6 py-2.5 rounded-xl flex items-center gap-2 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-shadow duration-300"
-                    >
-                      Ver Proyectos <Sparkles size={18} />
-                    </motion.button>
-                    <motion.a
-                      href="/cv.pdf"
-                      download
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-purple-900/50 border border-purple-500/30 hover:border-purple-500/50 px-6 py-2.5 rounded-xl flex items-center gap-2 transition-colors duration-300"
-                    >
-                      Descargar CV <Download size={18} />
-                    </motion.a>
-                  </div>
+      <Navigation />
+
+      <main className="pt-20">
+        {/* Hero Section */}
+        <section className="py-12 px-4 md:py-20" id="home">
+          <div className="max-w-7xl mx-auto">
+            {/* Profile Card */}
+            <div className="flex flex-col md:flex-row items-center gap-6 bg-gradient-to-br from-purple-900/50 to-violet-900/50 rounded-3xl p-8 border border-purple-500/20">
+              <motion.img
+                src="/api/placeholder/150/150"
+                alt="Profile"
+                className="w-32 h-32 rounded-full border-4 border-purple-500/30"
+                whileHover={{ scale: 1.05, rotate: 5 }}
+              />
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400">
+                  Willenson Rafael
+                  <span className="inline-block ml-2">👋</span>
+                </h1>
+                <p className="text-purple-200 text-lg mb-6">
+                  Desarrollador web creativo y apasionado
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-purple-600 to-violet-600 px-6 py-2.5 rounded-xl flex items-center gap-2"
+                  >
+                    Ver Proyectos ✨
+                  </motion.button>
+                  <motion.a
+                    href="/cv.pdf"
+                    download
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-purple-900/50 border border-purple-500/30 hover:border-purple-500/50 px-6 py-2.5 rounded-xl flex items-center gap-2"
+                  >
+                    Descargar CV <Download size={18} />
+                  </motion.a>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Quick Stats Cards */}
-            <div className="grid grid-cols-2 gap-4 w-full">
-              <motion.div
-                className="bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-4 border border-purple-500/20 hover:border-purple-500/30 transition-colors duration-300"
-                whileHover={{ y: -2 }}
-              >
-                <h4 className="text-purple-300 text-sm mb-1">Experiencia</h4>
-                <p className="text-2xl font-bold text-purple-200">2+ años</p>
-              </motion.div>
-              <motion.div
-                className="bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-4 border border-purple-500/20 hover:border-purple-500/30 transition-colors duration-300"
-                whileHover={{ y: -2 }}
-              >
-                <h4 className="text-purple-300 text-sm mb-1">Proyectos</h4>
-                <p className="text-2xl font-bold text-purple-200">15+</p>
-              </motion.div>
             </div>
 
             {/* Projects Grid */}
-            <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6">
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"
+              id="portfolio"
+            >
               {projectData.map((project, index) => (
                 <motion.div
                   key={index}
-                  className={`group bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-5 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300
-                    ${project.size === "large" ? "md:col-span-2" : ""} 
-                    ${project.size === "medium" ? "md:col-span-1" : ""}`}
+                  className={`bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-5 border border-purple-500/20
+                    ${project.size === "large" ? "md:col-span-2" : ""}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ y: -5 }}
                 >
-                  <div className="relative mb-4 overflow-hidden rounded-xl group">
-                    <motion.img
+                  <div className="relative mb-4 overflow-hidden rounded-xl">
+                    <img
                       src={project.imageUrl}
                       alt={project.title}
-                      className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-48 object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
-                      <motion.div
-                        className="flex gap-3"
-                        initial={{ y: 20 }}
-                        animate={{ y: 0 }}
-                      >
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                      <div className="flex gap-3">
                         <motion.a
                           href="#"
-                          className="bg-purple-600/90 p-2 rounded-full hover:bg-purple-500/90 transition-colors"
+                          className="bg-purple-600/90 p-2 rounded-full"
                           whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
                         >
                           <Github size={20} />
                         </motion.a>
                         <motion.a
                           href="#"
-                          className="bg-purple-600/90 p-2 rounded-full hover:bg-purple-500/90 transition-colors"
+                          className="bg-purple-600/90 p-2 rounded-full"
                           whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
                         >
                           <ExternalLink size={20} />
                         </motion.a>
-                      </motion.div>
+                      </div>
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-purple-300 group-hover:text-purple-200 transition-colors">
+                  <h3 className="text-xl font-semibold mb-2 text-purple-300">
                     {project.title}
                   </h3>
-                  <p className="text-purple-200/80 text-sm mb-4 group-hover:text-purple-200/90 transition-colors">
+                  <p className="text-purple-200/80 text-sm mb-4">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag, tagIndex) => (
                       <span
                         key={tagIndex}
-                        className="text-xs bg-purple-900/40 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30 group-hover:border-purple-500/50 transition-colors"
+                        className="text-xs bg-purple-900/40 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30"
                       >
                         {tag}
                       </span>
@@ -220,39 +248,28 @@ const BentoPortfolio = () => {
 
             {/* Skills Section */}
             <motion.div
-              className="md:col-span-3 bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-6 border border-purple-500/20"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-12 bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl p-6 border border-purple-500/20"
+              id="skills"
             >
-              <h3 className="text-2xl font-semibold mb-8 text-purple-300 flex items-center gap-2">
-                Habilidades Técnicas
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                >
-                  🛠️
-                </motion.span>
+              <h3 className="text-2xl font-semibold mb-8 text-purple-300">
+                Habilidades Técnicas 🛠️
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {skillsData.map((skill, index) => (
                   <motion.div
                     key={index}
-                    className="group relative bg-black/20 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300"
+                    className="bg-black/20 rounded-xl p-4 border border-purple-500/20"
                     whileHover={{ y: -5 }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
                   >
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-lg font-medium text-purple-200 group-hover:text-purple-100 transition-colors">
+                      <span className="text-lg font-medium text-purple-200">
                         {skill.name}
                       </span>
                       <span className="text-purple-400 font-semibold">
                         {skill.level}%
                       </span>
                     </div>
-                    <div className="h-2 bg-purple-900/30 rounded-full overflow-hidden mb-3">
+                    <div className="h-2 bg-purple-900/30 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${skill.level}%` }}
@@ -260,63 +277,15 @@ const BentoPortfolio = () => {
                         transition={{ duration: 1, delay: index * 0.2 }}
                       />
                     </div>
-
-                    <p className="text-sm text-purple-300/70 group-hover:text-purple-200/90 transition-colors">
-                      {skill.description}
-                    </p>
-                    <div className="absolute -right-1 -top-1">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: [0, 1.2, 1] }}
-                        transition={{ delay: index * 0.2 + 0.5 }}
-                        className={`w-3 h-3 rounded-full bg-gradient-to-r ${skill.color}`}
-                      />
-                    </div>
                   </motion.div>
                 ))}
               </div>
-
-              {/* Skills Summary */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <motion.div
-                  className="bg-black/20 rounded-xl p-4 border border-purple-500/20"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <h4 className="text-purple-300 font-medium mb-2">Frontend</h4>
-                  <p className="text-sm text-purple-200/70">
-                    Especializado en crear interfaces modernas y responsivas con
-                    React y frameworks CSS modernos.
-                  </p>
-                </motion.div>
-                <motion.div
-                  className="bg-black/20 rounded-xl p-4 border border-purple-500/20"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <h4 className="text-purple-300 font-medium mb-2">Backend</h4>
-                  <p className="text-sm text-purple-200/70">
-                    Desarrollo de APIs RESTful y manejo de bases de datos NoSQL
-                    con Node.js y MongoDB.
-                  </p>
-                </motion.div>
-                <motion.div
-                  className="bg-black/20 rounded-xl p-4 border border-purple-500/20"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <h4 className="text-purple-300 font-medium mb-2">Mobile</h4>
-                  <p className="text-sm text-purple-200/70">
-                    Desarrollo de aplicaciones móviles multiplataforma con React
-                    Native y Firebase.
-                  </p>
-                </motion.div>
-              </div>
             </motion.div>
 
-            {/* Contact Card */}
+            {/* Contact Section */}
             <motion.div
-              className="bg-gradient-to-br from-purple-900/30 to-violet-900/30 rounded-3xl p-6 border border-purple-500/20"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mt-12 bg-gradient-to-br from-purple-900/30 to-violet-900/30 rounded-3xl p-6 border border-purple-500/20"
+              id="contact"
             >
               <h3 className="text-xl font-semibold mb-4 text-purple-300">
                 Conectemos 🤝
@@ -349,12 +318,12 @@ const BentoPortfolio = () => {
               </div>
             </motion.div>
           </div>
-        </div>
-      </section>
-      {/* Footer Section */}
+        </section>
+      </main>
+
       <footer className="mt-20 border-t border-purple-500/20">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {/* About Column */}
             <div className="md:col-span-2">
               <motion.h3
@@ -373,7 +342,8 @@ const BentoPortfolio = () => {
                 transition={{ delay: 0.1 }}
               >
                 Desarrollador web apasionado por crear experiencias digitales
-                extraordinarias y soluciones innovadoras.
+                extraordinarias y soluciones innovadoras que marquen la
+                diferencia.
               </motion.p>
               <motion.div
                 className="flex gap-4"
@@ -382,30 +352,30 @@ const BentoPortfolio = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                {[
-                  { icon: Github, href: "https://github.com", label: "GitHub" },
-                  {
-                    icon: Linkedin,
-                    href: "https://linkedin.com",
-                    label: "LinkedIn",
-                  },
-                  {
-                    icon: Mail,
-                    href: "mailto:contact@example.com",
-                    label: "Email",
-                  },
-                ].map((social, index) => (
-                  <motion.a
-                    key={index}
-                    href={social.href}
-                    className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.9 }}
-                    aria-label={social.label}
-                  >
-                    <social.icon size={20} />
-                  </motion.a>
-                ))}
+                <motion.a
+                  href="#"
+                  className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Github size={20} />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Linkedin size={20} />
+                </motion.a>
+                <motion.a
+                  href="mailto:contact@example.com"
+                  className="bg-purple-900/30 p-2.5 rounded-xl text-purple-400 hover:text-purple-300 hover:bg-purple-900/50 transition-colors duration-300"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Mail size={20} />
+                </motion.a>
               </motion.div>
             </div>
 
@@ -426,19 +396,14 @@ const BentoPortfolio = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                {[
-                  { name: "Inicio", href: "#home" },
-                  { name: "Proyectos", href: "#portfolio" },
-                  { name: "Habilidades", href: "#skills" },
-                  { name: "Contacto", href: "#contact" },
-                ].map((link, index) => (
+                {navItems.map((link, index) => (
                   <li key={index}>
                     <motion.a
                       href={link.href}
                       className="text-purple-200/70 hover:text-purple-300 transition-colors duration-300 flex items-center gap-2"
                       whileHover={{ x: 5 }}
                     >
-                      <span className="h-1 w-1 rounded-full bg-purple-500"></span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500"></span>
                       {link.name}
                     </motion.a>
                   </li>
@@ -463,23 +428,20 @@ const BentoPortfolio = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                <a
-                  href="mailto:contact@example.com"
-                  className="flex items-center gap-3 text-purple-200/70 hover:text-purple-300 transition-colors duration-300"
-                >
+                <p className="flex items-center gap-3 text-purple-200/70">
                   <Mail size={16} />
                   contact@example.com
-                </a>
+                </p>
                 <p className="flex items-center gap-3 text-purple-200/70">
                   <span className="inline-block">📍</span>
-                  Santo Domingo, República Dominicana
+                  Santo Domingo, RD
                 </p>
               </motion.div>
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-8 border-t border-purple-500/20">
+          <div className="pt-8 border-t border-purple-500/20">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <motion.p
                 className="text-purple-200/60 text-sm"
