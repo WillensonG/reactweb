@@ -1,24 +1,156 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Github, ExternalLink, Menu, X, Code } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { Github } from "lucide-react";
+import { Menu } from "lucide-react";
+import { X } from "lucide-react";
+import { Code } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { Users } from "lucide-react";
+
+const MobileNav = ({ isOpen, onClose, navItems }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 md:hidden">
+      <div className="flex justify-end p-4">
+        <button onClick={onClose} className="text-white p-2">
+          <X size={24} />
+        </button>
+      </div>
+      <nav className="flex flex-col items-center gap-8 pt-8">
+        {navItems.map((item, i) => (
+          <a
+            key={i}
+            href={item.href}
+            className="text-xl text-purple-200/80 hover:text-purple-200"
+            onClick={onClose}
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
+};
+
+const ProjectCard = ({ project, onClick }) => {
+  return (
+    <article
+      className="bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl overflow-hidden border border-purple-500/20 cursor-pointer hover:-translate-y-1 transition-transform"
+      onClick={onClick}
+    >
+      <div className="relative">
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-48 object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+      </div>
+      <div className="p-4 md:p-6">
+        <h3 className="text-lg md:text-xl font-semibold mb-2 text-purple-200">
+          {project.title}
+        </h3>
+        <p className="text-sm md:text-base text-purple-200/70 mb-4">
+          {project.description}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {project.technologies.map((tech, j) => (
+            <span
+              key={j}
+              className="text-xs md:text-sm bg-purple-900/40 text-purple-300 px-2 md:px-3 py-1 rounded-full"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+};
+
+const ProjectModal = ({ project, onClose }) => {
+  if (!project) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-gradient-to-b from-gray-900 to-black w-full max-w-4xl mx-4 overflow-hidden rounded-xl border border-white/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex flex-col md:flex-row">
+          <div className="md:w-1/2 relative">
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-64 md:h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent md:bg-gradient-to-r" />
+          </div>
+
+          <div className="md:w-1/2 p-6 relative">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <X size={20} className="text-white/80" />
+            </button>
+
+            <h2 className="text-2xl font-bold text-white mb-3">
+              {project.title}
+            </h2>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.technologies.map((tech, index) => (
+                <span
+                  key={index}
+                  className="text-xs font-medium bg-white/5 text-white/80 px-2.5 py-1 rounded-full ring-1 ring-white/10"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <p className="text-white/70 text-sm mb-6">{project.description}</p>
+
+            <div className="flex gap-3">
+              <a
+                href={project.links.github}
+                className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 ring-1 ring-white/10 px-4 py-2 rounded-lg text-sm text-white transition-colors"
+              >
+                <Github size={16} className="text-white/70" />
+                <span>GitHub</span>
+              </a>
+              <a
+                href={project.links.live}
+                className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 ring-1 ring-white/10 px-4 py-2 rounded-lg text-sm text-white transition-colors"
+              >
+                <ExternalLink size={16} className="text-white/70" />
+                <span>Ver Demo</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProjectsPage = () => {
-  const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const navItems = [
     { name: "Inicio", href: "/" },
-    { name: "Sobre Mí", href: "/about" },
+    { name: "Sobre mí", href: "/about" },
     { name: "Proyectos", href: "/projects" },
-    { name: "Contacto", href: "/#contact" },
   ];
+
+  const categories = ["Todos", "Web App", "Dashboard", "Mobile"];
 
   const projectsData = [
     {
@@ -28,11 +160,7 @@ const ProjectsPage = () => {
       image: "/api/placeholder/600/400",
       category: "Web App",
       technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-      featured: true,
-      links: {
-        github: "#",
-        live: "#",
-      },
+      links: { github: "#", live: "#" },
     },
     {
       title: "Dashboard Analytics",
@@ -41,11 +169,7 @@ const ProjectsPage = () => {
       image: "/api/placeholder/600/400",
       category: "Dashboard",
       technologies: ["React", "D3.js", "Firebase"],
-      featured: true,
-      links: {
-        github: "#",
-        live: "#",
-      },
+      links: { github: "#", live: "#" },
     },
     {
       title: "App de Gestión de Tareas",
@@ -54,233 +178,204 @@ const ProjectsPage = () => {
       image: "/api/placeholder/600/400",
       category: "Mobile",
       technologies: ["React Native", "Redux", "Firebase"],
-      featured: false,
-      links: {
-        github: "#",
-        live: "#",
-      },
+      links: { github: "#", live: "#" },
     },
   ];
-
-  const categories = ["Todos", "Web App", "Dashboard", "Mobile"];
 
   const filteredProjects = projectsData.filter(
     (project) =>
       selectedCategory === "Todos" || project.category === selectedCategory
   );
 
-  // Componente de Navegación
-  const Navigation = () => (
-    <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-purple-500/20
-        ${scrollY > 50 ? "shadow-lg shadow-purple-500/10" : ""}`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <motion.a
-            href="/"
-            className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400"
-            whileHover={{ scale: 1.05 }}
-          >
-            WR
-          </motion.a>
-
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
-              <motion.a
-                key={index}
-                href={item.href}
-                className="text-purple-200/80 hover:text-purple-200 transition-colors"
-                whileHover={{ y: -2 }}
-              >
-                {item.name}
-              </motion.a>
-            ))}
-          </div>
-
-          <motion.button
-            className="md:hidden text-purple-200 p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </motion.button>
-        </div>
-
-        <motion.div
-          className={`md:hidden ${isMenuOpen ? "block" : "hidden"}`}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : -20 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="py-4 space-y-4">
-            {navItems.map((item, index) => (
-              <motion.a
-                key={index}
-                href={item.href}
-                className="block text-purple-200/80 hover:text-purple-200 py-2 transition-colors"
-                whileHover={{ x: 5 }}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </motion.nav>
-  );
-
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navigation />
+      <MobileNav
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        navItems={navItems}
+      />
 
-      {/* Header */}
-      <header className="pt-28 pb-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.h1
-            className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            Mis Proyectos
-          </motion.h1>
-          <motion.p
-            className="text-xl text-purple-200/90 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            Una colección de mis trabajos más destacados en desarrollo web y
-            mobile
-          </motion.p>
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-purple-500/20">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <a
+              href="/"
+              className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400"
+            >
+              WR
+            </a>
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item, i) => (
+                <a
+                  key={i}
+                  href={item.href}
+                  className="text-purple-200/80 hover:text-purple-200 transition-colors"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+            <button
+              className="md:hidden text-purple-200"
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Filter Categories */}
-      <section className="py-8 px-4">
+      <main className="pt-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="flex flex-wrap justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            {categories.map((category, index) => (
-              <motion.button
-                key={index}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-xl border ${
-                  selectedCategory === category
-                    ? "border-purple-500 bg-purple-500/20 text-purple-200"
-                    : "border-purple-500/20 text-purple-200/60 hover:border-purple-500/40"
-                } transition-all duration-300`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {category}
-              </motion.button>
+          <header className="text-center mb-8 md:mb-12">
+            <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400">
+              Mis Proyectos
+            </h1>
+            <p className="text-lg md:text-xl text-purple-200/90">
+              Una colección de mis trabajos más destacados
+            </p>
+          </header>
+
+          <div className="overflow-x-auto -mx-4 px-4 mb-8 md:mb-12">
+            <div className="flex gap-3 md:gap-4 md:justify-center min-w-max">
+              {categories.map((category, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 md:px-6 py-2 rounded-xl border whitespace-nowrap ${
+                    selectedCategory === category
+                      ? "border-purple-500 bg-purple-500/20 text-purple-200"
+                      : "border-purple-500/20 text-purple-200/60"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {filteredProjects.map((project, i) => (
+              <ProjectCard
+                key={i}
+                project={project}
+                onClick={() => setSelectedProject(project)}
+              />
             ))}
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </main>
 
-      {/* Projects Grid */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            {filteredProjects.map((project, index) => (
-              <motion.article
-                key={index}
-                className={`bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl overflow-hidden border border-purple-500/20
-                  ${project.featured ? "md:col-span-2" : ""}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="relative group">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-4 left-4 flex gap-4">
-                      <motion.a
-                        href={project.links.github}
-                        className="bg-purple-600/90 p-2 rounded-full"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Github size={20} />
-                      </motion.a>
-                      <motion.a
-                        href={project.links.live}
-                        className="bg-purple-600/90 p-2 rounded-full"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <ExternalLink size={20} />
-                      </motion.a>
+      <section className="py-16 md:py-20 mt-16 md:mt-20 bg-gradient-to-b from-black to-purple-900/20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
+            <div className="space-y-6">
+              <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400">
+                ¿Tienes un proyecto en mente?
+              </h2>
+              <p className="text-base md:text-lg text-purple-200/90">
+                Estoy disponible para nuevos proyectos y colaboraciones.
+                ¡Hablemos sobre cómo puedo ayudarte!
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-purple-200/80">
+                  <div className="bg-purple-500/10 p-2 rounded-lg">
+                    <Users size={20} />
+                  </div>
+                  <span className="text-sm md:text-base">
+                    Disponible para trabajo freelance
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-purple-200/80">
+                  <div className="bg-purple-500/10 p-2 rounded-lg">
+                    <Calendar size={20} />
+                  </div>
+                  <span className="text-sm md:text-base">
+                    Disponibilidad: 20h/semana
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-purple-200/80">
+                  <div className="bg-purple-500/10 p-2 rounded-lg">
+                    <Code size={20} />
+                  </div>
+                  <span className="text-sm md:text-base">
+                    Desarrollo web y móvil
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <a
+                  href="mailto:contacto@ejemplo.com"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-violet-600 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white text-sm md:text-base font-medium hover:opacity-90 transition-opacity"
+                >
+                  Enviar mensaje
+                  <ExternalLink size={18} />
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-900/20 to-violet-900/20 rounded-2xl border border-purple-500/20 p-6 md:p-8">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-green-400 rounded-full" />
+                  <span className="text-green-400 font-medium">
+                    Disponible para proyectos
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-purple-200">
+                    Horario de trabajo
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-purple-200/80">
+                    <div>
+                      <p className="font-medium">Lunes - Viernes</p>
+                      <p>9:00 AM - 6:00 PM</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Zona horaria</p>
+                      <p>GMT-3 (Argentina)</p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold mb-3 text-purple-200">
-                    {project.title}
+
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-purple-200">
+                    Servicios
                   </h3>
-                  <p className="text-purple-200/70 mb-4">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="text-sm bg-purple-900/40 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                  <ul className="space-y-2 text-sm text-purple-200/80">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                      Desarrollo Frontend
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                      Desarrollo Backend
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                      Aplicaciones Móviles
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                      UI/UX Design
+                    </li>
+                  </ul>
                 </div>
-              </motion.article>
-            ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.div
-            className="bg-gradient-to-br from-purple-900/30 to-violet-900/30 rounded-3xl p-8 border border-purple-500/20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-purple-200">
-              ¿Tienes un proyecto en mente?
-            </h2>
-            <p className="text-purple-200/80 mb-6">
-              Estoy disponible para nuevos proyectos y colaboraciones. ¡Hablemos
-              sobre cómo puedo ayudarte!
-            </p>
-            <motion.a
-              href="/#contact"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-violet-600 px-6 py-3 rounded-xl text-white"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Contactar
-              <Code size={20} />
-            </motion.a>
-          </motion.div>
-        </div>
-      </section>
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </div>
   );
 };

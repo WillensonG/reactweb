@@ -15,7 +15,7 @@ const AboutUs = () => {
   const navItems = [
     { name: "Inicio", href: "/" },
     { name: "Proyectos", href: "/projects" },
-    { name: "Habilidades", href: "/#skills" },
+
     { name: "Contacto", href: "/#contact" },
   ];
 

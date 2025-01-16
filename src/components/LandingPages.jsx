@@ -64,10 +64,9 @@ const BentoPortfolio = () => {
 
   const navItems = [
     { name: "Inicio", href: "#home" },
-    { name: "Sobre Mí", href: "/about" },
+    { name: "Sobre mí", href: "/about" },
     { name: "Proyectos", href: "/projects" },
-    { name: "Habilidades", href: "#skills" },
-    { name: "Contacto", href: "#contact" },
+    { name: "Proyectos", href: "/tests" },
   ];
 
   const Navigation = () => (
@@ -158,10 +157,11 @@ const BentoPortfolio = () => {
                 whileHover={{ scale: 1.05, rotate: 5 }}
               />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-400">
-                  Willenson Rafael
+                <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-200">
+                  Willenson Rafael Guillen Inirio
                   <span className="inline-block ml-2">👋</span>
                 </h1>
+
                 <p className="text-purple-200 text-lg mb-6">
                   Desarrollador web creativo y apasionado
                 </p>
@@ -174,8 +174,8 @@ const BentoPortfolio = () => {
                     Ver Proyectos ✨
                   </motion.button>
                   <motion.a
-                    href="/cv.pdf"
-                    download
+                    href="\CV Willenson Rafael Guillen Inirio.pdf"
+                    download="\CV Willenson Rafael Guillen Inirio.pdf"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-purple-900/50 border border-purple-500/30 hover:border-purple-500/50 px-6 py-2.5 rounded-xl flex items-center gap-2"
@@ -186,6 +186,7 @@ const BentoPortfolio = () => {
               </div>
             </div>
 
+            <hr />
             {/* Projects Grid */}
             <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"
