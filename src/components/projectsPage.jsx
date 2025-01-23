@@ -157,7 +157,7 @@ const ProjectsPage = () => {
       title: "Sistema de Pasarela de Pago",
       description:
         "Una plataforma de procesamiento de pagos integrada con múltiples proveedores que facilita transacciones seguras.",
-      image: "/api/placeholder/600/400",
+      image: "",
       category: "Web App",
       technologies: ["React", "Node.js", "MongoDB", "Stripe"],
       links: { github: "#", live: "#" },
@@ -174,11 +174,25 @@ const ProjectsPage = () => {
     {
       title: "App de Gestión de Tareas",
       description:
-        "Aplicación móvil para gestión eficiente de tareas y proyectos en equipo.",
-      image: "/api/placeholder/600/400",
-      category: "Mobile",
-      technologies: ["React Native", "Redux", "Firebase"],
-      links: { github: "#", live: "#" },
+        "Aplicación Web para gestión eficiente de tareas y proyectos en equipo.",
+      image: "./img/to-do.png",
+      category: "Web App",
+      technologies: ["React", "framer motion", "Firebase"],
+      links: {
+        github: "https://github.com/WillensonG/To-do-list/tree/main",
+        live: "#",
+      },
+    },
+    {
+      title: "Tienda Web basica",
+      description: "Aplicación Web para la venta de productos especificos.",
+      image: "./img/product-card.png",
+      category: "Web App",
+      technologies: ["Html", "Css", "JavaScript"],
+      links: {
+        github: "https://github.com/WillensonG/products-cards",
+        live: "#",
+      },
     },
   ];
 
@@ -307,7 +321,7 @@ const ProjectsPage = () => {
 
               <div className="pt-4">
                 <a
-                  href="mailto:contacto@ejemplo.com"
+                  href="mailto:Willensonr.g@gmail.com"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-violet-600 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white text-sm md:text-base font-medium hover:opacity-90 transition-opacity"
                 >
                   Enviar mensaje

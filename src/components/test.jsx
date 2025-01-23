@@ -64,18 +64,28 @@ const ModernPortfolio = () => {
   ];
 
   const skillsData = [
-    { name: "⚛️ React", level: 90, color: "from-purple-400 to-purple-600" },
+    { name: "⚛️ React", level: 90, color: "from-blue-200 to-blue-600" },
     {
       name: "📜 JavaScript",
       level: 85,
-      color: "from-purple-400 to-purple-600",
+      color: "from-yellow-200 to-yellow-600",
     },
     {
       name: "🎭 Framer Motion",
       level: 80,
-      color: "from-purple-400 to-purple-600",
+      color: "from-purple-200 to-purple-600",
     },
-    { name: "🐍 Python", level: 70, color: "from-purple-400 to-purple-600" },
+    { name: "🐍 Python", level: 70, color: "from-green-200 to-green-600" },
+
+    {
+      name: "🌐 node.js",
+      level: 80,
+      color: "from-green-300 to-gray-600",
+    },
+
+    { name: "🎨 Tailwind CSS", level: 85, color: "from-teal-200 to-teal-600" },
+    { name: "📦 MongoDB", level: 65, color: "from-emerald-200 to-emerald-600" },
+    { name: "📊 Data Analysis", level: 55, color: "from-pink-200 to-pink-600" },
   ];
 
   const Navigation = () => (
@@ -179,7 +189,7 @@ const ModernPortfolio = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Desarrollador Full Stack
+                Desarrollador Front-end
               </motion.h2>
               <motion.p
                 className="text-gray-400 text-lg mb-12 max-w-2xl leading-relaxed"
