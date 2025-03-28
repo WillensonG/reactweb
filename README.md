@@ -25,6 +25,12 @@ cd reactweb
 ¿Quieres que el enlace al sitio web, correo o LinkedIn sean reales o prefieres dejarlo como ejemplo genérico? También puedo ayudarte a incluir una sección para mostrar tus proyectos destacados dentro del portafolio si lo deseas.
 ```
 ## 📸 Vista previa
+![image](https://github.com/user-attachments/assets/ef36e216-08b7-4ae1-99b7-d9d275b4eddf)
+![image](https://github.com/user-attachments/assets/e864d00f-2da5-4687-af0d-b0c638ecfd23)
+![image](https://github.com/user-attachments/assets/12cf6c9b-4003-4e51-a7d9-d842e8e2cd3e)
+
+
+
 
 ## Contacto
 
