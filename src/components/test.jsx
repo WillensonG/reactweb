@@ -20,32 +20,33 @@ const ModernPortfolio = () => {
       description:
         "Plataforma de procesamiento de pagos integrada con múltiples proveedores",
       tags: ["⚛️ React", "🚀 Node.js", "💳 Stripe"],
-      imageUrl: "/api/placeholder/400/250",
+      imageUrl: "./img/pagos.png",
     },
     {
       title: "🎨 Landing Page Moderna",
       description:
         "Página de aterrizaje con diseño moderno y animaciones fluidas",
       tags: ["⚛️ React", "🎭 Framer"],
-      imageUrl: "/api/placeholder/400/250",
+      imageUrl: "./img/webS.png",
     },
     {
-      title: "📊 Dashboard Analítico",
-      description: "Panel de control interactivo para visualización de datos",
-      tags: ["⚛️ React", "📈 D3.js"],
-      imageUrl: "/api/placeholder/400/250",
+      title: "📊 App de gestión de Tareas",
+      description:
+        "Aplicación Web para gestión eficiente de tareas y proyectos en equipo.",
+      tags: ["⚛️ React", "📈 Framer Motion"],
+      imageUrl: "./img/to-do.png",
     },
   ];
 
   const stats = [
     {
       icon: "💻",
-      title: "10+ Proyectos",
+      title: "20+ Proyectos",
       description: "Entregados con éxito",
     },
     {
       icon: "✨",
-      title: "2 años",
+      title: "4 años",
       description: "De experiencia",
     },
     {
@@ -71,8 +72,8 @@ const ModernPortfolio = () => {
       color: "from-yellow-200 to-yellow-600",
     },
     {
-      name: "🎭 Framer Motion",
-      level: 80,
+      name: "🎭 Wordpress",
+      level: 90,
       color: "from-purple-200 to-purple-600",
     },
     { name: "🐍 Python", level: 70, color: "from-green-200 to-green-600" },
@@ -112,13 +113,16 @@ const ModernPortfolio = () => {
             <motion.a href="/about" className="text-gray-300 hover:text-white">
               Sobre mí
             </motion.a>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-purple-600 px-4 py-2 rounded-lg"
-            >
-              Contactar ✨
-            </motion.button>
+            <a href="mailto:Willensonr.g@gmail.com">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
+              >
+                Contactar ✨
+              </motion.button>
+            </a>
           </div>
 
           <motion.button
@@ -214,8 +218,8 @@ const ModernPortfolio = () => {
                   <span className="relative z-10">✨</span>
                 </motion.a>
                 <motion.a
-                  href="/CV Willenson Rafael Guillen Inirio.pdf"
-                  download="/CV Willenson Rafael Guillen Inirio.pdf"
+                  href="/Cv Willen.pdf"
+                  download="/Cv Willen.pdf"
                   className="bg-transparent border border-purple-600/50 px-6 py-3 rounded-lg font-medium inline-flex items-center gap-2 hover:border-purple-600 transition-colors shadow-[0_0_15px_rgba(147,51,234,0.1)] hover:shadow-[0_0_15px_rgba(147,51,234,0.2)]"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -295,13 +299,6 @@ const ModernPortfolio = () => {
                         whileHover={{ scale: 1.1 }}
                       >
                         <Github size={20} />
-                      </motion.a>
-                      <motion.a
-                        href="#"
-                        className="bg-purple-600/90 p-2 rounded-full"
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        <ExternalLink size={20} />
                       </motion.a>
                     </div>
                   </div>

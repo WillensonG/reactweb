@@ -154,6 +154,102 @@ const ProjectsPage = () => {
 
   const projectsData = [
     {
+      title: "Marte Abad Soluciones Legales",
+      description:
+        "Sitio web profesional animado para una firma legal, creado con React y Framer Motion. Presenta servicios jurídicos y capacitaciones con un diseño sobrio y elegante, orientado al mercado dominicano.",
+      image: "./img/legal.png", // Puedes ajustar el path según la imagen guardada
+      category: "Web App",
+      technologies: ["React", "Framer Motion", "TailwindCSS", "JavaScript"],
+      links: {
+        github: "https://github.com/WillensonG",
+        live: "https://legalmarte.com",
+      },
+    },
+
+    {
+      title: "App de Gestión de Tareas",
+      description:
+        "Aplicación Web para gestión eficiente de tareas y proyectos en equipo.",
+      image: "./img/to-do.png",
+      category: "Web App",
+      technologies: ["React", "framer motion", "Firebase"],
+      links: {
+        github: "https://github.com/WillensonG/To-do-list/tree/main",
+        live: "https://tasklist.willensong.com/",
+      },
+    },
+    {
+      title: "Ecommerce App",
+      description:
+        "Aplicación Web para la venta de productos, hecha con wordpress.",
+      image: "./img/bestbuy.png",
+      category: "Web App",
+      technologies: ["Wordpress", "Css", "Elementor"],
+      links: {
+        live: "https://bethbuy.com/",
+      },
+    },
+    {
+      title: "Plataforma Inmobiliaria ",
+      description:
+        "Sitio web inmobiliario desarrollado en WordPress utilizando el tema Homlisti. Permite a los usuarios buscar, filtrar y publicar propiedades, con un diseño moderno y funcionalidades avanzadas.",
+      image: "./img/real.png", // Reemplaza con la ruta real de la imagen
+      category: "WordPress",
+      technologies: ["WordPress", "PHP", "Elementor"],
+      links: {
+        github: "https://github.com/WillensonG", // Portafolio vinculado a tu perfil
+        live: "https://lightblue-kingfisher-618489.hostingersite.com",
+      },
+    },
+
+    {
+      title: "Tienda Web basica",
+      description: "Aplicación Web para la venta de productos especificos.",
+      image: "./img/product-card.png",
+      category: "Web App",
+      technologies: ["Html", "Css", "JavaScript"],
+      links: {
+        github: "https://github.com/WillensonG/products-cards",
+        live: "https://productscards.willensong.com/",
+      },
+    },
+    {
+      title: "Colección Reservada",
+      description:
+        "Catálogo web de propiedades premium, diseñado para mostrar inmuebles exclusivos con detalles como habitaciones, baños, dirección y precio. Incluye botón de exploración y etiquetas de estatus.",
+      image: "./img/11.png",
+      category: "Web App",
+      technologies: ["React", "TailwindCSS", "JavaScript", "HTML"],
+      links: {
+        live: "https://real.kellyshomepc.com/", // Puedes añadir la URL si está desplegado.
+      },
+    },
+
+    {
+      title: "Kelly's CRM",
+      description:
+        "Aplicación CRM para gestión de propiedades, mantenimientos, facturas, contratos y relaciones con clientes. Ideal para negocios inmobiliarios.",
+      image: "./img/crm.png",
+      category: "Web App",
+      technologies: ["EspoCRM", "PHP", "MySQL", "JavaScript", "CSS"],
+      links: {
+        live: "https://kellyshomepc.com/", // No hay link en la imagen, puedes actualizarlo si tienes el demo o deploy.
+      },
+    },
+
+    {
+      title: "Web&IT Solutions Website (En desarrollo)",
+      description:
+        "Landing page corporativa moderna desarrollada con React y Tailwind CSS para una empresa de desarrollo de software. Destaca servicios, tecnologías y facilita el contacto con clientes potenciales.",
+      image: "./img/webS.png", // Puedes ajustar el path según tu estructura
+      category: "Web App",
+      technologies: ["React", "TailwindCSS", "Vite", "JavaScript"],
+      links: {
+        github: "https://github.com/WillensonG",
+        live: "https://webitsolutions.dev/", // Cámbialo si aún no está en línea
+      },
+    },
+    {
       title: "Sistema de Pasarela de Pago",
       description:
         "Una plataforma de procesamiento de pagos integrada con múltiples proveedores que facilita transacciones seguras.",
@@ -170,29 +266,6 @@ const ProjectsPage = () => {
       category: "Dashboard",
       technologies: ["React", "D3.js", "Firebase"],
       links: { github: "#", live: "#" },
-    },
-    {
-      title: "App de Gestión de Tareas",
-      description:
-        "Aplicación Web para gestión eficiente de tareas y proyectos en equipo.",
-      image: "./img/to-do.png",
-      category: "Web App",
-      technologies: ["React", "framer motion", "Firebase"],
-      links: {
-        github: "https://github.com/WillensonG/To-do-list/tree/main",
-        live: "#",
-      },
-    },
-    {
-      title: "Tienda Web basica",
-      description: "Aplicación Web para la venta de productos especificos.",
-      image: "./img/product-card.png",
-      category: "Web App",
-      technologies: ["Html", "Css", "JavaScript"],
-      links: {
-        github: "https://github.com/WillensonG/products-cards",
-        live: "#",
-      },
     },
   ];
 

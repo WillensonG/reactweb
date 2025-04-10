@@ -4,8 +4,9 @@ import BentoPortfolio from "./components/LandingPages";
 import AboutUs from "./components/AboutUs";
 import ProjectsPage from "./components/projectsPage";
 import ModernPortfolio from "./components/test";
+import WebITSolutions from "./components/webS";
 
-const App = () => {
+function App() {
   return (
     <Router>
       <Routes>
@@ -13,9 +14,10 @@ const App = () => {
         <Route path="/" element={<ModernPortfolio />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/Web" element={<WebITSolutions />} />
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;
