@@ -1,3 +1,329 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Windows 2000 color tokens */
+  --color-desktop: #008080;        /* Classic teal desktop */
+  --color-win-silver: #d4d0c8;     /* Classic Windows silver/gray */
+  --color-win-dark: #808080;       /* Darker gray for borders */
+  --color-win-light: #ffffff;      /* Highlight / light edge */
+  --color-win-shadow: #404040;     /* Shadow edge */
+  --color-titlebar-start: #000080; /* Navy title bar start */
+  --color-titlebar-end: #1084d0;   /* Blue title bar end */
+  --color-titlebar-text: #ffffff;
+  --color-win-btn: #d4d0c8;
+  --color-win-text: #000000;
+  --color-win-disabled: #808080;
+  --color-win-highlight: #0000ff;
+  --color-win-link: #0000ee;
+  --color-win-visited: #551a8b;
+  --color-win-body: #d4d0c8;
+
+  /* Font */
+  --font-system: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-system);
+  font-size: 11px;
+  background-color: var(--color-desktop);
+  color: var(--color-win-text);
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   WIN2K REUSABLE PRIMITIVES
+   ============================================ */
+
+/* Raised 3D border (outset bevel) */
+.win-raised {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+}
+
+/* Sunken 3D border (inset bevel) */
+.win-sunken {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-shadow) var(--color-win-light) var(--color-win-light) var(--color-win-shadow);
+}
+
+/* Classic window panel */
+.win-panel {
+  background-color: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+  padding: 2px;
+}
+
+/* Window with title bar */
+.win-window {
+  background-color: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+}
+
+/* Title bar gradient */
+.win-titlebar {
+  background: linear-gradient(to right, var(--color-titlebar-start), var(--color-titlebar-end));
+  color: var(--color-titlebar-text);
+  font-weight: bold;
+  font-size: 11px;
+  padding: 3px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+/* Classic button */
+.win-btn {
+  background-color: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+  padding: 3px 10px;
+  font-family: var(--font-system);
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--color-win-text);
+  display: inline-block;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.win-btn:hover {
+  background-color: #e8e4dc;
+}
+
+.win-btn:active {
+  border-color: var(--color-win-shadow) var(--color-win-light) var(--color-win-light) var(--color-win-shadow);
+  padding: 4px 9px 2px 11px;
+}
+
+/* Default / primary button */
+.win-btn-default {
+  border-color: #000 #808080 #808080 #000;
+  outline: 2px solid #000;
+  outline-offset: 1px;
+}
+
+/* Close / minimize / maximize buttons */
+.win-ctrl-btn {
+  width: 16px;
+  height: 14px;
+  background-color: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  text-decoration: none;
+}
+
+/* Menu bar */
+.win-menubar {
+  background-color: var(--color-win-silver);
+  border-bottom: 1px solid var(--color-win-dark);
+  padding: 1px 4px;
+  display: flex;
+  gap: 2px;
+}
+
+.win-menuitem {
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 11px;
+  text-decoration: none;
+  color: var(--color-win-text);
+}
+
+.win-menuitem:hover {
+  background-color: var(--color-titlebar-start);
+  color: white;
+}
+
+/* Status bar */
+.win-statusbar {
+  background-color: var(--color-win-silver);
+  border-top: 1px solid var(--color-win-dark);
+  padding: 1px 4px;
+  font-size: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+.win-statusbar-panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-win-shadow) var(--color-win-light) var(--color-win-light) var(--color-win-shadow);
+  padding: 0 4px;
+  flex: 1;
+}
+
+/* Progress bar */
+.win-progress-track {
+  background-color: var(--color-win-light);
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-win-shadow) var(--color-win-light) var(--color-win-light) var(--color-win-shadow);
+  height: 14px;
+  overflow: hidden;
+}
+
+.win-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    #000080 0px,
+    #000080 8px,
+    #1084d0 8px,
+    #1084d0 16px
+  );
+}
+
+/* Fieldset / groupbox */
+.win-groupbox {
+  border: 1px solid var(--color-win-shadow);
+  background-color: var(--color-win-silver);
+  padding: 8px;
+  position: relative;
+}
+
+.win-groupbox legend {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0 4px;
+  background-color: var(--color-win-silver);
+}
+
+/* Inset text area / input */
+.win-input {
+  background-color: white;
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-shadow) var(--color-win-light) var(--color-win-light) var(--color-win-shadow);
+  padding: 2px 4px;
+  font-family: var(--font-system);
+  font-size: 11px;
+}
+
+/* Desktop icon */
+.win-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px;
+  width: 72px;
+}
+
+.win-icon:hover .win-icon-label {
+  background-color: #000080;
+  color: white;
+}
+
+.win-icon-label {
+  font-size: 10px;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 1px #000;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* Taskbar */
+.win-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background-color: var(--color-win-silver);
+  border-top: 2px solid var(--color-win-light);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 4px;
+  z-index: 9999;
+}
+
+/* Start button */
+.win-start-btn {
+  background-color: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+  padding: 2px 8px 2px 6px;
+  font-family: var(--font-system);
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-win-silver);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+}
+::-webkit-scrollbar-button {
+  background: var(--color-win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--color-win-light) var(--color-win-shadow) var(--color-win-shadow) var(--color-win-light);
+  width: 16px;
+  height: 16px;
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.blink {
+  animation: blink 1s infinite;
+}
+
+/* Scanline overlay for extra retro feel */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 1px,
+    rgba(0,0,0,0.03) 1px,
+    rgba(0,0,0,0.03) 2px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
