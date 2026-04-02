@@ -1,0 +1,167 @@
+{
+  "name": "PDF & Image Data Extractor (Daily)",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 8,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [250, 250]
+    },
+    {
+      "parameters": {
+        "path": "/data/pdfs/",
+        "options": {
+          "recursive": true
+        }
+      },
+      "name": "Read PDF Files",
+      "type": "n8n-nodes-base.readBinaryFiles",
+      "typeVersion": 1,
+      "position": [500, 250]
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "name": "Split Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [750, 250]
+    },
+    {
+      "parameters": {
+        "language": "eng",
+        "additionalOptions": {}
+      },
+      "name": "Extract Text (OCR)",
+      "type": "n8n-nodes-base.ocrSpace",
+      "typeVersion": 1,
+      "position": [1000, 250],
+      "credentials": {
+        "ocrSpaceApi": "OCR Space API"
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return items.map(item => {\n  const text = item.json.ParsedResults?.[0]?.ParsedText || '';\n  // Extrae patrones específicos del texto\n  const nombre = text.match(/Nombre:\\s*(.*)/)?.[1] || '';\n  const fecha = text.match(/Fecha:\\s*(.*)/)?.[1] || '';\n  const monto = text.match(/Monto:\\s*\\$?(\\d+[\\.,]?\\d*)/i)?.[1] || '';\n  return {\n    json: {\n      nombre,\n      fecha,\n      monto,\n      textoCompleto: text\n    }\n  };\n});"
+      },
+      "name": "Parse Text",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1250, 250]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "ExtractedData!A:C",
+        "options": {},
+        "valueInputMode": "RAW",
+        "fields": "nombre,fecha,monto"
+      },
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [1500, 250],
+      "credentials": {
+        "googleApi": "Google Sheets API"
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "✅ Extracción completada con éxito. Los datos fueron guardados en Google Sheets."
+      },
+      "name": "Notify Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1750, 250],
+      "credentials": {
+        "telegramApi": "Telegram Bot API"
+      }
+    }
+  ],
+  "connections": {
+    "Daily Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read PDF Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read PDF Files": {
+      "main": [
+        [
+          {
+            "node": "Split Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Batches": {
+      "main": [
+        [
+          {
+            "node": "Extract Text (OCR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text (OCR)": {
+      "main": [
+        [
+          {
+            "node": "Parse Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Text": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Notify Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "PDF_Extractor_Workflow"
+}

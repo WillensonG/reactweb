@@ -449,7 +449,7 @@ const AboutUs = () => {
         paragraphs: [
           "Desde pequeño, siempre me ha apasionado la tecnología y cómo puede ser una herramienta poderosa para transformar el mundo. Este interés me llevó a explorar el desarrollo web, un campo en el que llevo más de 5 años trabajando.",
           "Me gradué del Instituto Tecnológico de las Américas (ITLA), donde obtuve una formación sólida en tecnologías de la información, sentando las bases para mi carrera profesional en desarrollo web y TI.",
-          "Actualmente, soy pasante de desarrollo web y TI en Grupo Chavón, donde contribuyo a la creación de soluciones tecnológicas innovadoras, incluyendo pasarelas de pago y aplicaciones frontend utilizando React y otras herramientas modernas.",
+          "Actualmente, soy  desarrollador web y TI en Grupo Chavón, donde contribuyo a la creación de soluciones tecnológicas innovadoras, incluyendo pasarelas de pago y aplicaciones frontend utilizando React y otras herramientas modernas.",
           "En 2023, fui encargado del departamento de TI en Cigar Country. Durante este período, lideré la implementación de proyectos clave, optimizando los procesos internos de la empresa a través de soluciones tecnológicas avanzadas.",
           "Además, gestioné más de 30 dominios y desarrollé landing pages optimizadas para el mercado hispanohablante, combinando diseño atractivo con funcionalidades prácticas. También he desarrollado proyectos personales, como una lista de tareas en React, enfocándome siempre en crear experiencias de usuario excepcionales.",
           "Mi filosofía profesional es simple: el mejor código no solo debe cumplir con su propósito, sino también ser escalable, mantenible y una guía para que otros desarrolladores crezcan.",
@@ -460,7 +460,7 @@ const AboutUs = () => {
         items: [
           {
             year: "2024 - Presente",
-            role: "Pasante de Desarrollo Web y TI",
+            role: "Desarrollo Web y TI",
             company: "Grupo Chavón",
             description:
               "Contribuí al desarrollo de soluciones tecnológicas, incluyendo proyectos de frontend con React, implementación de pasarelas de pago con Framer Motion y soporte técnico general. Enfocado en mercados hispanos.",
@@ -599,8 +599,8 @@ const AboutUs = () => {
       "HTML5",
       "CSS3",
     ],
-    backend: ["Node.js", "Express", "MongoDB", "Firebase"],
-    tools: ["Git", "GitHub", "VS Code", "Figma", "Adobe XD"],
+    backend: ["Node.js", "Express", "MongoDB", "Firebase", "Laravel", "python"],
+    tools: ["Git", "GitHub", "VS Code", "Figma", "Vercel", "Postman"],
   };
 
   return (
@@ -702,8 +702,8 @@ const AboutUs = () => {
             </p>
 
             <motion.a
-              href="/Cv Willen.pdf"
-              download="/Cv Willen.pdf"
+              href="/CV-Willenson-Guillen-Developer.pdf"
+              download="/CV-Willenson-Guillen-Developer.pdf"
               className={`mt-8 inline-flex items-center px-6 py-3 rounded-full font-medium ${
                 isDarkMode ? "text-white" : "text-white"
               } shadow-lg ${

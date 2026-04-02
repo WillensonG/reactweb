@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Torre de Hanoi</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        padding: 10px;
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .game-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .info-box {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px 0 rgba(245, 87, 108, 0.4);
+        white-space: nowrap;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px 0 rgba(245, 87, 108, 0.6);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      select {
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        cursor: pointer;
+      }
+
+      .game-board {
+        display: flex;
+        justify-content: center;
+        gap: clamp(20px, 8vw, 100px);
+        margin-top: 20px;
+        min-height: clamp(250px, 50vh, 350px);
+        position: relative;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 0 10px;
+      }
+
+      .tower {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        width: clamp(120px, 25vw, 200px);
+        position: relative;
+        padding-bottom: 20px;
+        flex-shrink: 0;
+      }
+
+      .tower-base {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: clamp(10px, 2vh, 15px);
+        background: linear-gradient(to right, #434343 0%, #000000 100%);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .tower-pole {
+        position: absolute;
+        bottom: clamp(10px, 2vh, 15px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(6px, 1.5vw, 8px);
+        height: clamp(200px, 40vh, 300px);
+        background: linear-gradient(to top, #434343 0%, #000000 100%);
+        border-radius: 4px 4px 0 0;
+        z-index: -1;
+      }
+
+      .tower-label {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .disk {
+        height: clamp(25px, 5vh, 35px);
+        border-radius: 20px;
+        margin: 2px 0;
+        cursor: grab;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        position: relative;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+      }
+
+      .disk:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .disk.dragging {
+        cursor: grabbing;
+        opacity: 0.8;
+        transform: scale(1.1);
+        z-index: 1000;
+      }
+
+      /* Tamaños de discos responsivos */
+      .disk1 {
+        width: clamp(50px, 10vw, 80px);
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      }
+      .disk2 {
+        width: clamp(60px, 12vw, 100px);
+        background: linear-gradient(45deg, #4ecdc4, #44a3aa);
+      }
+      .disk3 {
+        width: clamp(70px, 14vw, 120px);
+        background: linear-gradient(45deg, #f7b731, #e67e22);
+      }
+      .disk4 {
+        width: clamp(80px, 16vw, 140px);
+        background: linear-gradient(45deg, #5f27cd, #341f97);
+      }
+      .disk5 {
+        width: clamp(90px, 18vw, 160px);
+        background: linear-gradient(45deg, #00d2d3, #54a0ff);
+      }
+      .disk6 {
+        width: clamp(100px, 20vw, 180px);
+        background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+      }
+      .disk7 {
+        width: clamp(110px, 22vw, 200px);
+        background: linear-gradient(45deg, #fd79a8, #e84393);
+      }
+
+      .tower.drag-over {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transform: scale(1.05);
+      }
+
+      .victory-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        z-index: 2000;
+        transition: all 0.5s ease;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .victory-message.show {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .victory-message h2 {
+        font-size: clamp(1.5rem, 5vw, 3rem);
+        margin-bottom: 20px;
+      }
+
+      .victory-message p {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+        margin-bottom: 30px;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .disk.highlight {
+        animation: pulse 0.5s ease-in-out;
+      }
+
+      /* Media Queries para dispositivos móviles */
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+          margin: 10px;
+        }
+
+        .game-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .info-box {
+          width: 100%;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+        }
+
+        button,
+        select {
+          width: 100%;
+          max-width: 200px;
+        }
+
+        .game-board {
+          gap: clamp(15px, 5vw, 30px);
+          justify-content: space-around;
+          padding: 0 5px;
+        }
+
+        .tower {
+          width: clamp(80px, 20vw, 120px);
+        }
+
+        .tower-label {
+          font-size: clamp(0.7rem, 2vw, 0.9rem);
+          bottom: -25px;
+        }
+
+        .disk {
+          height: clamp(20px, 4vh, 30px);
+          font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+        }
+
+        /* Ajuste de tamaños de discos para móvil */
+        .disk1 {
+          width: clamp(40px, 8vw, 60px);
+        }
+        .disk2 {
+          width: clamp(45px, 9vw, 70px);
+        }
+        .disk3 {
+          width: clamp(50px, 10vw, 80px);
+        }
+        .disk4 {
+          width: clamp(55px, 11vw, 90px);
+        }
+        .disk5 {
+          width: clamp(60px, 12vw, 100px);
+        }
+        .disk6 {
+          width: clamp(65px, 13vw, 110px);
+        }
+        .disk7 {
+          width: clamp(70px, 14vw, 120px);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .game-board {
+          gap: clamp(10px, 3vw, 20px);
+        }
+
+        .tower {
+          width: clamp(60px, 18vw, 100px);
+        }
+
+        .tower-pole {
+          height: clamp(150px, 30vh, 200px);
+        }
+
+        .victory-message {
+          padding: 20px;
+        }
+
+        /* Tamaños de discos más pequeños para móviles muy pequeños */
+        .disk1 {
+          width: clamp(35px, 7vw, 50px);
+        }
+        .disk2 {
+          width: clamp(40px, 8vw, 60px);
+        }
+        .disk3 {
+          width: clamp(45px, 9vw, 70px);
+        }
+        .disk4 {
+          width: clamp(50px, 10vw, 80px);
+        }
+        .disk5 {
+          width: clamp(55px, 11vw, 90px);
+        }
+        .disk6 {
+          width: clamp(60px, 12vw, 100px);
+        }
+        .disk7 {
+          width: clamp(65px, 13vw, 110px);
+        }
+      }
+
+      /* Mejoras para pantallas grandes */
+      @media (min-width: 1200px) {
+        .container {
+          padding: 50px;
+        }
+
+        .game-board {
+          margin-top: 50px;
+        }
+      }
+
+      /* Orientación horizontal en móviles */
+      @media (max-height: 500px) and (orientation: landscape) {
+        body {
+          padding: 5px;
+        }
+
+        .container {
+          padding: 10px;
+        }
+
+        h1 {
+          margin-bottom: 10px;
+        }
+
+        .game-info {
+          margin-bottom: 10px;
+        }
+
+        .controls {
+          margin-bottom: 15px;
+        }
+
+        .game-board {
+          min-height: 200px;
+          margin-top: 10px;
+        }
+
+        .tower-pole {
+          height: clamp(120px, 25vh, 180px);
+        }
+
+        .tower-label {
+          bottom: -20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🏗️ Torre de Hanoi 🏗️</h1>
+
+      <div class="game-info">
+        <div class="info-box">
+          <span>Movimientos: <strong id="moves">0</strong></span>
+        </div>
+        <div class="info-box">
+          <span>Mínimo: <strong id="minimum">7</strong></span>
+        </div>
+        <div class="info-box">
+          <span>Tiempo: <strong id="timer">00:00</strong></span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <select id="diskCount">
+          <option value="3">3 Discos</option>
+          <option value="4">4 Discos</option>
+          <option value="5">5 Discos</option>
+          <option value="6">6 Discos</option>
+          <option value="7">7 Discos</option>
+        </select>
+        <button onclick="resetGame()">🔄 Reiniciar</button>
+        <button onclick="showSolution()">💡 Ver Solución</button>
+      </div>
+
+      <div class="game-board">
+        <div class="tower" id="tower1" data-tower="1">
+          <div class="tower-pole"></div>
+          <div class="tower-base"></div>
+          <div class="tower-label">Torre A</div>
+        </div>
+        <div class="tower" id="tower2" data-tower="2">
+          <div class="tower-pole"></div>
+          <div class="tower-base"></div>
+          <div class="tower-label">Torre B</div>
+        </div>
+        <div class="tower" id="tower3" data-tower="3">
+          <div class="tower-pole"></div>
+          <div class="tower-base"></div>
+          <div class="tower-label">Torre C</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="victory-message" id="victoryMessage">
+      <h2>🎉 ¡Felicidades! 🎉</h2>
+      <p id="victoryText"></p>
+      <button onclick="resetGame()">Jugar de Nuevo</button>
+    </div>
+
+    <script>
+      let moves = 0;
+      let startTime = null;
+      let timerInterval = null;
+      let draggedDisk = null;
+      let solutionSteps = [];
+      let isShowingSolution = false;
+
+      function initGame() {
+        const diskCount = parseInt(document.getElementById("diskCount").value);
+        const tower1 = document.getElementById("tower1");
+
+        // Limpiar torres
+        document.querySelectorAll(".disk").forEach((disk) => disk.remove());
+
+        // Crear discos
+        for (let i = diskCount; i >= 1; i--) {
+          const disk = createDisk(i);
+          tower1.appendChild(disk);
+        }
+
+        // Resetear contador
+        moves = 0;
+        updateMoves();
+
+        // Actualizar mínimo de movimientos
+        document.getElementById("minimum").textContent =
+          Math.pow(2, diskCount) - 1;
+
+        // Iniciar timer
+        startTimer();
+
+        // Ocultar mensaje de victoria
+        document.getElementById("victoryMessage").classList.remove("show");
+      }
+
+      function createDisk(size) {
+        const disk = document.createElement("div");
+        disk.className = `disk disk${size}`;
+        disk.textContent = size;
+        disk.draggable = true;
+        disk.dataset.size = size;
+
+        // Eventos de drag
+        disk.addEventListener("dragstart", handleDragStart);
+        disk.addEventListener("dragend", handleDragEnd);
+
+        // Eventos táctiles para móviles
+        disk.addEventListener("touchstart", handleTouchStart, {
+          passive: false,
+        });
+        disk.addEventListener("touchmove", handleTouchMove, { passive: false });
+        disk.addEventListener("touchend", handleTouchEnd, { passive: false });
+
+        // Eventos de click para móviles (alternativa táctil)
+        disk.addEventListener("click", handleDiskClick);
+
+        return disk;
+      }
+
+      function handleDragStart(e) {
+        const tower = e.target.parentElement;
+        const topDisk = getTopDisk(tower);
+
+        if (e.target !== topDisk) {
+          e.preventDefault();
+          return;
+        }
+
+        draggedDisk = e.target;
+        e.target.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+      }
+
+      function handleDragEnd(e) {
+        e.target.classList.remove("dragging");
+      }
+
+      // Touch events mejorados para móviles
+      let touchItem = null;
+      let touchOffset = { x: 0, y: 0 };
+      let selectedDisk = null;
+
+      function handleTouchStart(e) {
+        const tower = e.target.parentElement;
+        const topDisk = getTopDisk(tower);
+
+        if (e.target !== topDisk) return;
+
+        e.preventDefault();
+        touchItem = e.target;
+        const touch = e.touches[0];
+        const rect = e.target.getBoundingClientRect();
+        touchOffset.x = touch.clientX - rect.left;
+        touchOffset.y = touch.clientY - rect.top;
+
+        e.target.style.position = "fixed";
+        e.target.style.zIndex = "1000";
+        e.target.classList.add("dragging");
+      }
+
+      function handleTouchMove(e) {
+        if (!touchItem) return;
+        e.preventDefault();
+
+        const touch = e.touches[0];
+        touchItem.style.left = touch.clientX - touchOffset.x + "px";
+        touchItem.style.top = touch.clientY - touchOffset.y + "px";
+      }
+
+      function handleTouchEnd(e) {
+        if (!touchItem) return;
+        e.preventDefault();
+
+        const touch = e.changedTouches[0];
+        const elementBelow = document.elementFromPoint(
+          touch.clientX,
+          touch.clientY
+        );
+        const tower = elementBelow?.closest(".tower");
+
+        if (tower && canDropDisk(touchItem, tower)) {
+          tower.appendChild(touchItem);
+          moves++;
+          updateMoves();
+          checkWin();
+        }
+
+        touchItem.style.position = "";
+        touchItem.style.left = "";
+        touchItem.style.top = "";
+        touchItem.style.zIndex = "";
+        touchItem.classList.remove("dragging");
+        touchItem = null;
+      }
+
+      // Sistema de clicks para móviles (alternativa)
+      function handleDiskClick(e) {
+        const tower = e.target.parentElement;
+        const topDisk = getTopDisk(tower);
+
+        if (e.target !== topDisk) return;
+
+        if (selectedDisk === e.target) {
+          // Deseleccionar
+          selectedDisk.style.boxShadow = "";
+          selectedDisk = null;
+        } else if (selectedDisk) {
+          // Mover disco seleccionado
+          if (canDropDisk(selectedDisk, tower)) {
+            tower.appendChild(selectedDisk);
+            selectedDisk.style.boxShadow = "";
+            selectedDisk.classList.add("highlight");
+            setTimeout(() => selectedDisk.classList.remove("highlight"), 500);
+            moves++;
+            updateMoves();
+            checkWin();
+          }
+          selectedDisk = null;
+        } else {
+          // Seleccionar disco
+          selectedDisk = e.target;
+          selectedDisk.style.boxShadow = "0 0 20px rgba(255, 255, 255, 0.8)";
+        }
+      }
+
+      // Configurar eventos de drop en las torres
+      document.querySelectorAll(".tower").forEach((tower) => {
+        tower.addEventListener("dragover", handleDragOver);
+        tower.addEventListener("drop", handleDrop);
+        tower.addEventListener("dragleave", handleDragLeave);
+        tower.addEventListener("click", handleTowerClick);
+      });
+
+      function handleTowerClick(e) {
+        if (selectedDisk && e.target.classList.contains("tower")) {
+          if (canDropDisk(selectedDisk, e.target)) {
+            e.target.appendChild(selectedDisk);
+            selectedDisk.style.boxShadow = "";
+            selectedDisk.classList.add("highlight");
+            setTimeout(() => selectedDisk.classList.remove("highlight"), 500);
+            moves++;
+            updateMoves();
+            checkWin();
+          }
+          selectedDisk = null;
+        }
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        if (draggedDisk && canDropDisk(draggedDisk, e.currentTarget)) {
+          e.currentTarget.classList.add("drag-over");
+        }
+      }
+
+      function handleDragLeave(e) {
+        e.currentTarget.classList.remove("drag-over");
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove("drag-over");
+
+        if (draggedDisk && canDropDisk(draggedDisk, e.currentTarget)) {
+          e.currentTarget.appendChild(draggedDisk);
+          draggedDisk.classList.add("highlight");
+          setTimeout(() => draggedDisk.classList.remove("highlight"), 500);
+          moves++;
+          updateMoves();
+          checkWin();
+        }
+        draggedDisk = null;
+      }
+
+      function canDropDisk(disk, tower) {
+        const topDisk = getTopDisk(tower);
+        if (!topDisk) return true;
+        return parseInt(disk.dataset.size) < parseInt(topDisk.dataset.size);
+      }
+
+      function getTopDisk(tower) {
+        const disks = tower.querySelectorAll(".disk");
+        return disks[disks.length - 1] || null;
+      }
+
+      function updateMoves() {
+        document.getElementById("moves").textContent = moves;
+      }
+
+      function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+
+      function updateTimer() {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = (elapsed % 60).toString().padStart(2, "0");
+        document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+      }
+
+      function checkWin() {
+        const tower3 = document.getElementById("tower3");
+        const diskCount = parseInt(document.getElementById("diskCount").value);
+
+        if (tower3.querySelectorAll(".disk").length === diskCount) {
+          clearInterval(timerInterval);
+          const time = document.getElementById("timer").textContent;
+          const minimum = Math.pow(2, diskCount) - 1;
+
+          let message = `¡Lo lograste en ${moves} movimientos y ${time}!`;
+          if (moves === minimum) {
+            message += " ¡Solución perfecta! 🏆";
+          }
+
+          document.getElementById("victoryText").textContent = message;
+          document.getElementById("victoryMessage").classList.add("show");
+        }
+      }
+
+      function resetGame() {
+        isShowingSolution = false;
+        if (selectedDisk) {
+          selectedDisk.style.boxShadow = "";
+          selectedDisk = null;
+        }
+        initGame();
+      }
+
+      // Algoritmo para generar la solución
+      function generateSolution(n, source, target, auxiliary) {
+        if (n === 1) {
+          solutionSteps.push({ from: source, to: target });
+          return;
+        }
+        generateSolution(n - 1, source, auxiliary, target);
+        solutionSteps.push({ from: source, to: target });
+        generateSolution(n - 1, auxiliary, target, source);
+      }
+
+      async function showSolution() {
+        if (isShowingSolution) return;
+
+        resetGame();
+        isShowingSolution = true;
+        solutionSteps = [];
+
+        const diskCount = parseInt(document.getElementById("diskCount").value);
+        generateSolution(diskCount, "tower1", "tower3", "tower2");
+
+        for (let step of solutionSteps) {
+          if (!isShowingSolution) break;
+
+          const fromTower = document.getElementById(step.from);
+          const toTower = document.getElementById(step.to);
+          const disk = getTopDisk(fromTower);
+
+          if (disk) {
+            disk.classList.add("highlight");
+            await sleep(300);
+            toTower.appendChild(disk);
+            moves++;
+            updateMoves();
+            await sleep(300);
+            disk.classList.remove("highlight");
+          }
+        }
+
+        if (isShowingSolution) {
+          checkWin();
+        }
+      }
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Inicializar el juego
+      initGame();
+
+      // Prevenir zoom en móviles con doble tap
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        function (event) {
+          const now = new Date().getTime();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
