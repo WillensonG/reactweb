@@ -292,7 +292,7 @@ const ProjectsPage = () => {
         technologies: ["React", "framer motion", "Firebase"],
         links: {
           github: "https://github.com/WillensonG/To-do-list/tree/main",
-          live: "https://tasklist.willensong.com/",
+          live: "https://to-do-list-dvasug3ui-willensongs-projects.vercel.app/",
         },
       },
       {
@@ -523,7 +523,7 @@ const ProjectsPage = () => {
   const filteredProjects = projectsData[language].filter(
     (project) =>
       currentCategory === (language === "es" ? "Todos" : "All") ||
-      project.category === currentCategory
+      project.category === currentCategory,
   );
 
   return (
