@@ -318,7 +318,7 @@ const ModernPortfolio = () => {
   const WhatsAppButton = ({ phoneNumber, message }) => {
     // Generate WhatsApp URL with phone number and pre-filled message
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
+      message,
     )}`;
 
     return (
