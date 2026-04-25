@@ -1,8 +1,7 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
-  useSpring,
   useScroll,
   useTransform,
   useMotionValue,
@@ -16,18 +15,19 @@ import {
   Menu,
   X,
   Download,
-  Moon,
-  Sun,
   Globe,
+  CheckCircle,
+  GraduationCap,
+  Briefcase,
 } from "lucide-react";
 
-// Componentes separados para mejor organización
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
 const Navigation = ({
   scrollY,
   isMenuOpen,
   setIsMenuOpen,
   isDarkMode,
-  toggleTheme,
   language,
   toggleLanguage,
 }) => {
@@ -37,39 +37,20 @@ const Navigation = ({
     { name: language === "es" ? "Contacto" : "Contact", href: "/#contact" },
   ];
 
-  // Smooth animation values for navigation
-  const navOpacity = useTransform(
-    scrollY,
-    [0, 50],
-    [isDarkMode ? 0.7 : 0.6, isDarkMode ? 0.85 : 0.75]
-  );
-
   const navBlur = useTransform(scrollY, [0, 50], ["blur(8px)", "blur(12px)"]);
-
   const navPadding = useTransform(scrollY, [0, 50], ["1rem", "0.75rem"]);
 
   return (
     <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 border-b
-        ${
-          isDarkMode
-            ? "bg-black border-purple-500/20 shadow-purple-500/10"
-            : "bg-white border-purple-700/20 shadow-purple-700/10"
-        }
-        ${scrollY > 50 ? "shadow-lg" : ""}`}
+      className={`fixed top-0 left-0 right-0 z-50 border-b ${
+        isDarkMode
+          ? "bg-black/80 border-purple-500/20"
+          : "bg-white/80 border-purple-700/20"
+      }`}
       initial={{ y: -100 }}
-      animate={{
-        y: 0,
-        backdropFilter: navBlur,
-        backgroundColor: isDarkMode
-          ? `rgba(0, 0, 0, ${navOpacity})`
-          : `rgba(255, 255, 255, ${navOpacity})`,
-      }}
+      animate={{ y: 0, backdropFilter: navBlur }}
       style={{ paddingTop: navPadding, paddingBottom: navPadding }}
-      transition={{
-        y: { type: "spring", stiffness: 300, damping: 30 },
-        backgroundColor: { duration: 0.4 },
-      }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
       role="navigation"
       aria-label="Main Navigation"
     >
@@ -78,63 +59,47 @@ const Navigation = ({
           <motion.a
             href="/"
             className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-violet-500"
-            whileHover={{
-              scale: 1.05,
-              textShadow: "0px 0px 8px rgba(168, 85, 247, 0.6)",
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 17,
-            }}
-            aria-label="Home"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             WR
           </motion.a>
 
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
+            {navItems.map((item, i) => (
               <motion.a
-                key={index}
+                key={i}
                 href={item.href}
                 className={`transition-colors ${
                   isDarkMode
                     ? "text-purple-200/80 hover:text-purple-200"
                     : "text-purple-800/80 hover:text-purple-900"
                 }`}
-                whileHover={{
-                  y: -2,
-                  color: isDarkMode ? "rgb(233, 213, 255)" : "rgb(88, 28, 135)",
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 10,
-                }}
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 {item.name}
               </motion.a>
             ))}
-
-            <div className="flex items-center space-x-4">
-              <motion.button
-                onClick={toggleLanguage}
-                className={`p-2 rounded-full ${
-                  isDarkMode
-                    ? "bg-purple-900/30 text-purple-300"
-                    : "bg-purple-100 text-purple-700"
-                }`}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label={
-                  language === "es" ? "Switch to English" : "Cambiar a Español"
-                }
-              >
-                <Globe size={18} />
-              </motion.button>
-            </div>
+            <motion.button
+              onClick={toggleLanguage}
+              className={`p-2 rounded-full ${
+                isDarkMode
+                  ? "bg-purple-900/30 text-purple-300"
+                  : "bg-purple-100 text-purple-700"
+              }`}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label={
+                language === "es" ? "Switch to English" : "Cambiar a Español"
+              }
+            >
+              <Globe size={18} />
+            </motion.button>
           </div>
 
+          {/* Mobile controls */}
           <div className="flex md:hidden items-center space-x-3">
             <motion.button
               onClick={toggleLanguage}
@@ -144,13 +109,9 @@ const Navigation = ({
                   : "bg-purple-100 text-purple-700"
               }`}
               whileTap={{ scale: 0.95 }}
-              aria-label={
-                language === "es" ? "Switch to English" : "Cambiar a Español"
-              }
             >
               <Globe size={18} />
             </motion.button>
-
             <motion.button
               className={`p-2 ${
                 isDarkMode ? "text-purple-200" : "text-purple-800"
@@ -165,6 +126,7 @@ const Navigation = ({
           </div>
         </div>
 
+        {/* Mobile dropdown */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -172,24 +134,14 @@ const Navigation = ({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{
-                height: {
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 25,
-                },
-                opacity: {
-                  duration: 0.2,
-                  ease: "easeInOut",
-                },
-              }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
               <div className="py-4 space-y-4">
-                {navItems.map((item, index) => (
+                {navItems.map((item, i) => (
                   <motion.a
-                    key={index}
+                    key={i}
                     href={item.href}
-                    className={`block py-2 transition-colors ${
+                    className={`block py-2 ${
                       isDarkMode
                         ? "text-purple-200/80 hover:text-purple-200"
                         : "text-purple-800/80 hover:text-purple-900"
@@ -198,23 +150,7 @@ const Navigation = ({
                     animate={{
                       x: 0,
                       opacity: 1,
-                      transition: {
-                        delay: index * 0.1,
-                        type: "spring",
-                        stiffness: 250,
-                        damping: 20,
-                      },
-                    }}
-                    whileHover={{
-                      x: 5,
-                      color: isDarkMode
-                        ? "rgb(233, 213, 255)"
-                        : "rgb(88, 28, 135)",
-                      transition: {
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 10,
-                      },
+                      transition: { delay: i * 0.1 },
                     }}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -230,379 +166,330 @@ const Navigation = ({
   );
 };
 
-const SectionTitle = ({ children, className = "" }) => (
-  <h2
-    className={`text-2xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-500 ${className}`}
-  >
-    {children}
-  </h2>
+const SectionTitle = ({ children, icon: Icon }) => (
+  <div className="flex items-center gap-3 mb-6">
+    {Icon && <Icon size={20} className="text-purple-400 shrink-0" />}
+    <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-500">
+      {children}
+    </h2>
+  </div>
 );
 
-const SkillItem = ({ icon, children }) => (
+/** Single education entry */
+const EducationItem = ({ degree, institution, status, period, index }) => (
   <motion.div
-    className="flex items-center gap-3 bg-purple-900/30 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/50"
-    whileHover={{
-      scale: 1.03,
-      backgroundColor: "rgba(126, 34, 206, 0.4)",
-      borderColor: "rgba(168, 85, 247, 0.5)",
-    }}
-    whileTap={{ scale: 0.98 }}
-    transition={{
-      type: "spring",
-      stiffness: 500,
-      damping: 17,
-      backgroundColor: { duration: 0.2 },
-    }}
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay: 0.2 + index * 0.15, type: "spring", stiffness: 120 }}
+    className="flex gap-4 items-start"
   >
-    <motion.span
-      className="text-purple-400"
-      animate={{ y: [0, 2, 0] }}
-      transition={{
-        duration: 2,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatDelay: Math.random() * 2,
-      }}
-    >
-      {icon}
-    </motion.span>
-    <span className="text-purple-200">{children}</span>
+    <div className="mt-1 w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+    <div>
+      <p className="text-purple-200 font-medium">{degree}</p>
+      <p className="text-purple-300 text-sm">{institution}</p>
+      <div className="flex items-center gap-2 mt-1">
+        <span
+          className={`text-xs px-2 py-0.5 rounded-full border ${
+            status === "current"
+              ? "bg-purple-500/20 text-purple-300 border-purple-500/40"
+              : "bg-purple-900/20 text-purple-400 border-purple-700/30"
+          }`}
+        >
+          {period}
+        </span>
+      </div>
+    </div>
   </motion.div>
 );
 
+/** Timeline experience entry */
 const ExperienceItem = ({ year, role, company, description, index }) => (
   <motion.div
-    initial={{ opacity: 0, y: 30, x: -5 }}
+    initial={{ opacity: 0, y: 20 }}
     animate={{
       opacity: 1,
       y: 0,
-      x: 0,
-      transition: {
-        delay: 0.2 + index * 0.15,
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-      },
+      transition: { delay: 0.2 + index * 0.15, type: "spring", stiffness: 100 },
     }}
-    className="relative pb-8 pl-6 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-purple-500 before:via-purple-600/70 before:to-purple-700/30 last:before:to-transparent last:pb-0"
+    className="relative pb-8 pl-6 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-purple-500 before:via-purple-600/60 before:to-purple-700/20 last:pb-0"
   >
     <motion.div
       className="absolute w-3 h-3 left-[-6px] top-2 rounded-full bg-purple-500"
-      initial={{ scale: 0.5, opacity: 0.5 }}
-      animate={{
-        scale: 1,
-        opacity: 1,
-        boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.2)",
-        transition: {
-          delay: 0.2 + index * 0.15 + 0.3,
-          duration: 0.5,
-        },
-      }}
-      whileHover={{
-        scale: 1.2,
-        backgroundColor: "#a855f7",
-        boxShadow: "0 0 0 6px rgba(168, 85, 247, 0.3)",
-      }}
+      animate={{ boxShadow: "0 0 0 4px rgba(168,85,247,0.2)" }}
+      whileHover={{ scale: 1.3, boxShadow: "0 0 0 6px rgba(168,85,247,0.3)" }}
     />
-    <motion.span
-      className="text-sm text-purple-400 font-medium inline-block"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        transition: {
-          delay: 0.2 + index * 0.15 + 0.1,
-          duration: 0.3,
-        },
-      }}
-    >
+    <span className="text-xs text-purple-400 font-medium tracking-wide uppercase">
       {year}
-    </motion.span>
-    <motion.h3
-      className="text-lg font-medium text-purple-200 mt-1"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        transition: {
-          delay: 0.2 + index * 0.15 + 0.2,
-          duration: 0.3,
-        },
-      }}
-    >
-      {role}
-    </motion.h3>
-    <motion.p
-      className="text-purple-300 text-sm"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        transition: {
-          delay: 0.2 + index * 0.15 + 0.3,
-          duration: 0.3,
-        },
-      }}
-    >
-      {company}
-    </motion.p>
-    <motion.p
-      className="text-purple-200/70 mt-2"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        transition: {
-          delay: 0.2 + index * 0.15 + 0.4,
-          duration: 0.3,
-        },
-      }}
-    >
+    </span>
+    <h3 className="text-base font-semibold text-purple-200 mt-0.5">{role}</h3>
+    <p className="text-purple-400 text-sm">{company}</p>
+    <p className="text-purple-200/70 text-sm mt-1 leading-relaxed">
       {description}
-    </motion.p>
+    </p>
+  </motion.div>
+);
+
+/** QA / Skill badge */
+const SkillBadge = ({ label, icon: Icon }) => (
+  <motion.div
+    className="flex items-center gap-2 bg-purple-900/30 rounded-xl px-4 py-3 border border-purple-500/20"
+    whileHover={{
+      scale: 1.04,
+      backgroundColor: "rgba(126,34,206,0.35)",
+      borderColor: "rgba(168,85,247,0.5)",
+    }}
+    transition={{ type: "spring", stiffness: 500, damping: 18 }}
+  >
+    {Icon && <Icon size={16} className="text-purple-400 shrink-0" />}
+    <span className="text-purple-200 text-sm">{label}</span>
   </motion.div>
 );
 
 const SocialButton = ({ href, icon, label }) => (
   <motion.a
     href={href}
-    className="bg-purple-900/30 p-3 rounded-xl text-purple-400 hover:text-purple-300 border border-purple-500/20"
+    target="_blank"
+    rel="noreferrer"
+    className="bg-purple-900/30 p-3 rounded-xl text-purple-400 border border-purple-500/20"
     whileHover={{
-      scale: 1.1,
+      scale: 1.12,
       rotate: 5,
-      backgroundColor: "rgba(126, 34, 206, 0.5)",
-      borderColor: "rgba(168, 85, 247, 0.6)",
-      boxShadow: "0 0 15px rgba(168, 85, 247, 0.5)",
+      backgroundColor: "rgba(126,34,206,0.5)",
+      boxShadow: "0 0 18px rgba(168,85,247,0.5)",
     }}
-    whileTap={{
-      scale: 0.9,
-      rotate: -5,
-    }}
-    transition={{
-      type: "spring",
-      stiffness: 400,
-      damping: 10,
-      backgroundColor: { duration: 0.2 },
-      boxShadow: { duration: 0.2 },
-    }}
+    whileTap={{ scale: 0.9, rotate: -5 }}
+    transition={{ type: "spring", stiffness: 400, damping: 10 }}
     aria-label={label}
   >
-    <motion.div
-      animate={{
-        rotate: [0, 5, 0, -5, 0],
-        scale: [1, 1.1, 1, 1.1, 1],
-      }}
-      transition={{
-        duration: 5,
-        repeat: Infinity,
-        repeatDelay: Math.random() * 2,
-        ease: "easeInOut",
-      }}
-    >
-      {icon}
-    </motion.div>
+    {icon}
   </motion.a>
 );
+
+// ─── Main Component ────────────────────────────────────────────────────────────
 
 const AboutUs = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [language, setLanguage] = useState("es"); // "es" for Spanish, "en" for English
+  const [language, setLanguage] = useState("es");
 
-  // Use framer-motion's useScroll hook for smoother scroll handling
   const { scrollY } = useScroll();
   const scrollYValue = useMotionValue(0);
 
   useEffect(() => {
-    // Subscribe to changes in scrollY
-    const unsubscribeY = scrollY.onChange((latest) => {
-      scrollYValue.set(latest);
-    });
-
-    // Check user's preferred color scheme
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setIsDarkMode(prefersDark);
-
-    // Check browser language
-    const browserLang = navigator.language.startsWith("es") ? "es" : "en";
-    setLanguage(browserLang);
-
-    // Clean up subscriptions
-    return () => {
-      unsubscribeY();
-    };
+    const unsub = scrollY.onChange((v) => scrollYValue.set(v));
+    setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setLanguage(navigator.language.startsWith("es") ? "es" : "en");
+    return () => unsub();
   }, [scrollY]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
-  const toggleLanguage = () => setLanguage(language === "es" ? "en" : "es");
+  const toggleLanguage = () => setLanguage((l) => (l === "es" ? "en" : "es"));
 
-  // Content based on language
+  // ── i18n content ──────────────────────────────────────────────────────────
   const content = {
     es: {
       title: "Sobre Mí",
       subtitle:
-        "Desarrollador apasionado por crear experiencias digitales excepcionales y soluciones tecnológicas innovadoras.",
+        "Ingeniero de sistemas en evolución continua: de desarrollo web a QA & automatización. Orientado a calidad, eficiencia y oportunidades de impacto global.",
       history: {
-        title: "Mi Historia",
+        title: "Mi Trayectoria",
         paragraphs: [
-          "Desde pequeño, siempre me ha apasionado la tecnología y cómo puede ser una herramienta poderosa para transformar el mundo. Este interés me llevó a explorar el desarrollo web, un campo en el que llevo más de 5 años trabajando.",
-          "Me gradué del Instituto Tecnológico de las Américas (ITLA), donde obtuve una formación sólida en tecnologías de la información, sentando las bases para mi carrera profesional en desarrollo web y TI.",
-          "Actualmente, soy  desarrollador web y TI en Grupo Chavón, donde contribuyo a la creación de soluciones tecnológicas innovadoras, incluyendo pasarelas de pago y aplicaciones frontend utilizando React y otras herramientas modernas.",
-          "En 2023, fui encargado del departamento de TI en Cigar Country. Durante este período, lideré la implementación de proyectos clave, optimizando los procesos internos de la empresa a través de soluciones tecnológicas avanzadas.",
-          "Además, gestioné más de 30 dominios y desarrollé landing pages optimizadas para el mercado hispanohablante, combinando diseño atractivo con funcionalidades prácticas. También he desarrollado proyectos personales, como una lista de tareas en React, enfocándome siempre en crear experiencias de usuario excepcionales.",
-          "Mi filosofía profesional es simple: el mejor código no solo debe cumplir con su propósito, sino también ser escalable, mantenible y una guía para que otros desarrolladores crezcan.",
+          "Soy un profesional de tecnología con base en República Dominicana, con experiencia en soporte técnico, operaciones IT y desarrollo web. Actualmente formo parte del equipo de Claro Dominicana, donde gestiono sistemas, operaciones y soporte en un entorno empresarial de alta demanda.",
+          "Tengo formación técnica sólida del ITLA y actualmente estoy cursando Ingeniería en UNICARIBE, lo que refuerza mi base teórica y me impulsa hacia roles más especializados.",
+          "En los últimos años he transitado desde el frontend hacia un interés profundo en Quality Assurance: pruebas de software, automatización de testing y aseguramiento de calidad. Creo que el software de alta calidad empieza antes de que se escriba una línea de código.",
+          "Mi objetivo es crecer en el área de QA, contribuir a equipos internacionales y seguir construyendo soluciones que realmente funcionen.",
+        ],
+      },
+      education: {
+        title: "Formación",
+        items: [
+          {
+            degree: "Ingeniería en Sistemas",
+            institution: "UNICARIBE — Universidad del Caribe",
+            period: "En curso",
+            status: "current",
+          },
+          {
+            degree: "Tecnologías de la Información",
+            institution: "ITLA — Instituto Tecnológico de las Américas",
+            period: "Egresado",
+            status: "done",
+          },
         ],
       },
       experience: {
         title: "Experiencia Profesional",
         items: [
           {
-            year: "2024 - Presente",
-            role: "Desarrollo Web y TI",
-            company: "Grupo Chavón",
+            year: "2025 – Presente",
+            role: "Ingeniero IT",
+            company: "Claro Dominicana",
             description:
-              "Contribuí al desarrollo de soluciones tecnológicas, incluyendo proyectos de frontend con React, implementación de pasarelas de pago con Framer Motion y soporte técnico general. Enfocado en mercados hispanos.",
+              "Soporte técnico, gestión de sistemas y operaciones en entorno empresarial de telecomunicaciones. Coordinación de incidencias, mantenimiento de infraestructura y aseguramiento de continuidad operativa.",
           },
           {
-            year: "2023 - 2024",
-            role: "Encargado del Departamento de TI",
+            year: "2023 – 2024",
+            role: "Encargado de TI",
             company: "Cigar Country",
             description:
-              "Lideré el departamento de TI, implementando soluciones innovadoras y gestionando proyectos tecnológicos clave para optimizar los procesos internos de la empresa.",
+              "Lideré el departamento de IT: implementación de soluciones tecnológicas, gestión de proyectos internos y optimización de procesos operativos.",
           },
           {
             year: "2024",
-            role: "Desarrollador Web",
-            company: "Proyecto Freelance",
+            role: "Desarrollador Web — Freelance",
+            company: "Proyectos independientes",
             description:
-              "Gestioné 30 dominios y desarrollé landing pages optimizadas para usuarios hispanohablantes, combinando diseño atractivo con funcionalidades prácticas.",
+              "Gestión de más de 30 dominios y desarrollo de landing pages optimizadas para el mercado hispanohablante con foco en rendimiento y UX.",
           },
           {
-            year: "2023",
+            year: "2025",
             role: "Desarrollador Frontend",
-            company: "Proyecto Personal",
+            company: "Grupo Chavón",
             description:
-              "Desarrollé una lista de tareas en React, integrando funciones interactivas y mejorando la experiencia del usuario.",
+              "Desarrollo de soluciones frontend en React, integración de pasarelas de pago y soporte técnico general.",
           },
         ],
       },
-      skills: {
-        title: "Habilidades Personales",
-        items: [
-          "Resolución creativa de problemas",
-          "Trabajo en equipo eficiente",
-          "Comunicación efectiva",
-          "Aprendizaje continuo",
-          "Adaptabilidad",
-          "Creatividad",
+      qa: {
+        title: "Enfoque en QA & Calidad",
+        description:
+          "Actualmente profundizando en Quality Assurance: desde pruebas manuales hasta automatización con herramientas modernas.",
+        skills: [
+          "Pruebas funcionales y de regresión",
+          "Automatización con Playwright / Cypress",
+          "API Testing con Postman",
+          "Gestión de bugs y reportes",
+          "Testing en metodologías Agile",
+          "Mentalidad de calidad end-to-end",
         ],
       },
-      cta: {
-        title: "¡Trabajemos Juntos!",
-        text: "Siempre estoy interesado en nuevos proyectos y oportunidades de colaboración. ¿Tienes un proyecto en mente? ¡Hablemos!",
-        resume: "Descargar CV",
-      },
       technologies: {
-        title: "Tecnologías",
+        title: "Stack Técnico",
         frontend: "Frontend",
         backend: "Backend",
         tools: "Herramientas",
       },
+      cta: {
+        title: "Abierto a oportunidades",
+        text: "Busco roles en QA, automatización de pruebas y operaciones IT. Disponible para proyectos remotos e internacionales.",
+        resume: "Descargar CV",
+      },
     },
+
     en: {
       title: "About Me",
       subtitle:
-        "A passionate developer creating exceptional digital experiences and innovative technological solutions.",
+        "Systems engineer in continuous evolution: from web development to QA & automation. Focused on quality, efficiency, and global-impact opportunities.",
       history: {
-        title: "My Story",
+        title: "My Journey",
         paragraphs: [
-          "Since I was young, I've always been passionate about technology and how it can be a powerful tool to transform the world. This interest led me to explore web development, a field in which I have been working for over 5 years.",
-          "I graduated from the Instituto Tecnológico de las Américas (ITLA), where I received solid training in information technologies, laying the foundation for my professional career in web development and IT.",
-          "Currently, I am a web development and IT intern at Grupo Chavón, where I contribute to the creation of innovative technological solutions, including payment gateways and frontend applications using React and other modern tools.",
-          "In 2023, I was in charge of the IT department at Cigar Country. During this period, I led the implementation of key projects, optimizing the company's internal processes through advanced technological solutions.",
-          "Additionally, I managed more than 30 domains and developed landing pages optimized for the Spanish-speaking market, combining attractive design with practical functionalities. I have also developed personal projects, such as a task list in React, always focusing on creating exceptional user experiences.",
-          "My professional philosophy is simple: the best code should not only fulfill its purpose, but also be scalable, maintainable, and a guide for other developers to grow.",
+          "I'm a technology professional based in the Dominican Republic, with experience in technical support, IT operations, and web development. I currently work at Claro Dominicana, where I manage systems, operations, and support in a high-demand enterprise environment.",
+          "I have a solid technical background from ITLA and am currently pursuing an Engineering degree at UNICARIBE, strengthening my theoretical foundation and pushing me toward more specialized roles.",
+          "Over the past years I've transitioned from frontend development toward a deep interest in Quality Assurance: software testing, test automation, and quality engineering. I believe high-quality software starts before a single line of code is written.",
+          "My goal is to grow in the QA space, contribute to international teams, and keep building things that actually work.",
+        ],
+      },
+      education: {
+        title: "Education",
+        items: [
+          {
+            degree: "Systems Engineering",
+            institution: "UNICARIBE — Universidad del Caribe",
+            period: "In progress",
+            status: "current",
+          },
+          {
+            degree: "Information Technologies",
+            institution: "ITLA — Instituto Tecnológico de las Américas",
+            period: "Graduate",
+            status: "done",
+          },
         ],
       },
       experience: {
         title: "Professional Experience",
         items: [
           {
-            year: "2024 - Present",
-            role: "Web Development & IT Intern",
-            company: "Grupo Chavón",
+            year: "2025 – Present",
+            role: "IT Engineer",
+            company: "Claro Dominicana",
             description:
-              "Contributed to the development of technological solutions, including frontend projects with React, payment gateway implementation with Framer Motion, and general technical support. Focused on Hispanic markets.",
+              "Technical support, systems management, and operations in a high-demand telecom enterprise environment. Incident coordination, infrastructure maintenance, and operational continuity.",
           },
           {
-            year: "2023 - 2024",
-            role: "IT Department Manager",
+            year: "2025",
+            role: "Frontend Developer",
+            company: "Grupo Chavón",
+            description:
+              "React frontend development, payment gateway integration, and general technical support.",
+          },
+          {
+            year: "2023 – 2024",
+            role: "IT Department Lead",
             company: "Cigar Country",
             description:
-              "Led the IT department, implementing innovative solutions and managing key technological projects to optimize the company's internal processes.",
+              "Led the IT department: technology solutions implementation, internal project management, and operational process optimization.",
           },
           {
             year: "2024",
-            role: "Web Developer",
-            company: "Freelance Project",
+            role: "Web Developer — Freelance",
+            company: "Independent projects",
             description:
-              "Managed 30 domains and developed optimized landing pages for Spanish-speaking users, combining attractive design with practical functionalities.",
-          },
-          {
-            year: "2023",
-            role: "Frontend Developer",
-            company: "Personal Project",
-            description:
-              "Developed a task list in React, integrating interactive functions and improving the user experience.",
+              "Managed 30+ domains and developed performance-optimized landing pages for the Spanish-speaking market with a focus on UX.",
           },
         ],
       },
-      skills: {
-        title: "Personal Skills",
-        items: [
-          "Creative problem solving",
-          "Efficient teamwork",
-          "Effective communication",
-          "Continuous learning",
-          "Adaptability",
-          "Attention to detail",
+      qa: {
+        title: "QA & Quality Focus",
+        description:
+          "Currently deepening expertise in Quality Assurance: from manual testing to automation with modern tooling.",
+        skills: [
+          "Functional & regression testing",
+          "Automation with Playwright / Cypress",
+          "API Testing with Postman",
+          "Bug tracking & reporting",
+          "Agile testing methodologies",
+          "End-to-end quality mindset",
         ],
-      },
-      cta: {
-        title: "Let's Work Together!",
-        text: "I'm always interested in new projects and collaboration opportunities. Do you have a project in mind? Let's talk!",
-        resume: "Download CV",
       },
       technologies: {
-        title: "Technologies",
+        title: "Tech Stack",
         frontend: "Frontend",
         backend: "Backend",
         tools: "Tools",
       },
+      cta: {
+        title: "Open to opportunities",
+        text: "Looking for QA, test automation, and IT operations roles. Available for remote and international projects.",
+        resume: "Download CV",
+      },
     },
   };
 
-  // Use current language content
   const t = content[language];
 
-  // Tech stack
   const technologies = {
     frontend: [
       "React",
       "Next.js",
+      "TypeScript",
       "Tailwind CSS",
       "Framer Motion",
-      "JavaScript",
-      "TypeScript",
       "HTML5",
-      "CSS3",
     ],
-    backend: ["Node.js", "Express", "MongoDB", "Firebase", "Laravel", "python"],
-    tools: ["Git", "GitHub", "VS Code", "Figma", "Vercel", "Postman"],
+    backend: ["Node.js", "Express", "MongoDB", "Firebase", "Laravel", "Python"],
+    tools: [
+      "Git",
+      "GitHub",
+      "Postman",
+      "Playwright",
+      "Cypress",
+      "Figma",
+      "Vercel",
+      "VS Code",
+    ],
   };
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
@@ -610,16 +497,15 @@ const AboutUs = () => {
       }`}
     >
       <Navigation
-        scrollY={scrollY}
+        scrollY={scrollYValue}
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
         isDarkMode={isDarkMode}
-        toggleTheme={toggleTheme}
         language={language}
         toggleLanguage={toggleLanguage}
       />
 
-      {/* Hero Section with Parallax Effect */}
+      {/* ── Hero ── */}
       <section className="relative pt-28 pb-20 overflow-hidden">
         <div
           className={`absolute inset-0 ${
@@ -627,18 +513,12 @@ const AboutUs = () => {
               ? "bg-gradient-to-b from-purple-900/20 to-black"
               : "bg-gradient-to-b from-purple-100 to-white"
           }`}
-        ></div>
+        />
 
-        {/* Floating particles for visual effect - more elegant and subtle */}
+        {/* Ambient particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 30 }).map((_, i) => {
-            // Create more varied and natural particle sizes and speeds
-            const size = Math.random() * 8 + 2;
-            const duration = Math.random() * 15 + 15;
-            const initialDelay = Math.random() * 5;
-            const opacityMin = 0.05;
-            const opacityMax = isDarkMode ? 0.25 : 0.2;
-
+          {Array.from({ length: 25 }).map((_, i) => {
+            const size = Math.random() * 7 + 2;
             return (
               <motion.div
                 key={i}
@@ -651,50 +531,33 @@ const AboutUs = () => {
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
                 }}
-                initial={{
-                  opacity: 0,
-                  scale: 0.5,
-                }}
                 animate={{
-                  y: [
-                    0,
-                    (Math.random() * 60 - 30) * (size / 10),
-                    (Math.random() * -60 + 30) * (size / 10),
-                    0,
-                  ],
-                  x: [
-                    0,
-                    (Math.random() * 60 - 30) * (size / 10),
-                    (Math.random() * -60 + 30) * (size / 10),
-                    0,
-                  ],
-                  opacity: [opacityMin, opacityMax, opacityMin],
-                  scale: [0.8, 1, 0.8],
+                  y: [0, Math.random() * 40 - 20, 0],
+                  opacity: [0.05, isDarkMode ? 0.2 : 0.15, 0.05],
                 }}
                 transition={{
-                  duration: duration,
+                  duration: Math.random() * 12 + 12,
                   repeat: Infinity,
                   repeatType: "mirror",
                   ease: "easeInOut",
-                  delay: initialDelay,
+                  delay: Math.random() * 5,
                 }}
               />
             );
           })}
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-violet-500">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-violet-500">
               {t.title}
             </h1>
             <p
-              className={`text-xl max-w-2xl mx-auto ${
+              className={`text-lg md:text-xl max-w-2xl mx-auto leading-relaxed ${
                 isDarkMode ? "text-purple-200/90" : "text-purple-800/90"
               }`}
             >
@@ -702,74 +565,35 @@ const AboutUs = () => {
             </p>
 
             <motion.a
-              href="/CV-Willenson-Guillen-Developer.pdf"
-              download="/CV-Willenson-Guillen-Developer.pdf"
-              className={`mt-8 inline-flex items-center px-6 py-3 rounded-full font-medium ${
-                isDarkMode ? "text-white" : "text-white"
-              } shadow-lg ${
-                isDarkMode ? "shadow-purple-500/20" : "shadow-purple-500/30"
-              }`}
-              initial={{
-                scale: 0.9,
-                opacity: 0,
-              }}
-              animate={{
-                scale: 1,
-                opacity: 1,
-                transition: {
-                  delay: 0.6,
-                  duration: 0.5,
-                  type: "spring",
-                  stiffness: 150,
-                },
-              }}
+              href="/CV-Willenson-Guillen-Developer (3).pdf"
+              download
+              className="mt-8 inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white shadow-lg"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 150 }}
               whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 20px rgba(168, 85, 247, 0.6)",
+                scale: 1.06,
+                boxShadow: "0 0 24px rgba(168,85,247,0.6)",
               }}
-              whileTap={{
-                scale: 0.95,
-              }}
+              whileTap={{ scale: 0.95 }}
               style={{
-                background: `linear-gradient(90deg, rgba(147, 51, 234, 1) 0%, rgba(139, 92, 246, 1) 100%)`,
-                transition: "all 0.3s ease",
-              }}
-              transition={{
-                scale: {
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 10,
-                },
-                boxShadow: {
-                  duration: 0.2,
-                },
+                background:
+                  "linear-gradient(90deg, rgba(147,51,234,1), rgba(139,92,246,1))",
               }}
             >
-              <motion.span
-                animate={{
-                  x: [0, -3, 0, -3, 0],
-                  rotate: [0, -10, 0, -10, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-                className="mr-2"
-              >
-                <Download size={18} />
-              </motion.span>
+              <Download size={17} />
               {t.cta.resume}
             </motion.a>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content with Card Design */}
+      {/* ── Main sections ── */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+          {/* Row 1 — Historia + Educación */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Mi Historia */}
+            {/* Historia */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -780,230 +604,194 @@ const AboutUs = () => {
                   : "bg-white border border-purple-100"
               }`}
             >
-              <SectionTitle>{t.history.title}</SectionTitle>
+              <SectionTitle icon={Code}>{t.history.title}</SectionTitle>
               <div
-                className={`space-y-4 ${
+                className={`space-y-3 text-sm leading-relaxed ${
                   isDarkMode ? "text-purple-200/80" : "text-gray-700"
                 }`}
               >
-                {t.history.paragraphs.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                {t.history.paragraphs.map((p, i) => (
+                  <p key={i}>{p}</p>
                 ))}
               </div>
             </motion.div>
 
-            {/* Experiencia */}
+            {/* Educación */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className={`rounded-2xl p-6 shadow-xl ${
                 isDarkMode
                   ? "bg-gradient-to-br from-purple-900/20 to-violet-900/20 border border-purple-500/20"
                   : "bg-white border border-purple-100"
               }`}
             >
-              <SectionTitle>{t.experience.title}</SectionTitle>
-              <div className="space-y-2">
-                {t.experience.items.map((exp, index) => (
-                  <ExperienceItem
-                    key={index}
-                    year={exp.year}
-                    role={exp.role}
-                    company={exp.company}
-                    description={exp.description}
-                    index={index}
-                  />
+              <SectionTitle icon={GraduationCap}>
+                {t.education.title}
+              </SectionTitle>
+              <div className="space-y-6">
+                {t.education.items.map((edu, i) => (
+                  <EducationItem key={i} {...edu} index={i} />
                 ))}
               </div>
             </motion.div>
           </div>
 
-          {/* Technology Stack */}
+          {/* Row 2 — Experiencia */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className={`mt-12 rounded-2xl p-6 shadow-xl ${
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className={`rounded-2xl p-6 shadow-xl ${
               isDarkMode
                 ? "bg-gradient-to-br from-purple-900/20 to-violet-900/20 border border-purple-500/20"
                 : "bg-white border border-purple-100"
             }`}
           >
-            <SectionTitle>{t.technologies.title}</SectionTitle>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <h3
-                  className={`font-medium mb-3 ${
-                    isDarkMode ? "text-purple-300" : "text-purple-700"
-                  }`}
-                >
-                  {t.technologies.frontend}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {technologies.frontend.map((tech, index) => (
-                    <span
-                      key={index}
-                      className={`text-sm rounded-full px-3 py-1 ${
-                        isDarkMode
-                          ? "bg-purple-900/40 text-purple-200 border border-purple-500/30"
-                          : "bg-purple-100 text-purple-800 border border-purple-200"
-                      }`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3
-                  className={`font-medium mb-3 ${
-                    isDarkMode ? "text-purple-300" : "text-purple-700"
-                  }`}
-                >
-                  {t.technologies.backend}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {technologies.backend.map((tech, index) => (
-                    <span
-                      key={index}
-                      className={`text-sm rounded-full px-3 py-1 ${
-                        isDarkMode
-                          ? "bg-purple-900/40 text-purple-200 border border-purple-500/30"
-                          : "bg-purple-100 text-purple-800 border border-purple-200"
-                      }`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3
-                  className={`font-medium mb-3 ${
-                    isDarkMode ? "text-purple-300" : "text-purple-700"
-                  }`}
-                >
-                  {t.technologies.tools}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {technologies.tools.map((tech, index) => (
-                    <span
-                      key={index}
-                      className={`text-sm rounded-full px-3 py-1 ${
-                        isDarkMode
-                          ? "bg-purple-900/40 text-purple-200 border border-purple-500/30"
-                          : "bg-purple-100 text-purple-800 border border-purple-200"
-                      }`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Habilidades Personales con Mejor Visualización */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className={`mt-12 rounded-2xl p-6 shadow-xl ${
-              isDarkMode
-                ? "bg-gradient-to-br from-purple-900/20 to-violet-900/20 border border-purple-500/20"
-                : "bg-white border border-purple-100"
-            }`}
-          >
-            <SectionTitle>{t.skills.title}</SectionTitle>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {t.skills.items.map((skill, index) => (
-                <SkillItem key={index} icon={<Code size={20} />}>
-                  {skill}
-                </SkillItem>
+            <SectionTitle icon={Briefcase}>{t.experience.title}</SectionTitle>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
+              {t.experience.items.map((exp, i) => (
+                <ExperienceItem key={i} {...exp} index={i} />
               ))}
             </div>
           </motion.div>
 
-          {/* Call to Action Mejorado */}
+          {/* Row 3 — QA Focus (highlighted) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className={`mt-16 rounded-2xl p-8 shadow-xl text-center ${
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className={`rounded-2xl p-6 shadow-xl border ${
+              isDarkMode
+                ? "bg-gradient-to-br from-violet-900/30 to-purple-900/20 border-violet-500/30"
+                : "bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200"
+            }`}
+          >
+            <SectionTitle icon={CheckCircle}>{t.qa.title}</SectionTitle>
+            <p
+              className={`text-sm mb-5 ${
+                isDarkMode ? "text-purple-200/80" : "text-gray-600"
+              }`}
+            >
+              {t.qa.description}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {t.qa.skills.map((skill, i) => (
+                <SkillBadge key={i} label={skill} icon={CheckCircle} />
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Row 4 — Tech stack */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`rounded-2xl p-6 shadow-xl ${
+              isDarkMode
+                ? "bg-gradient-to-br from-purple-900/20 to-violet-900/20 border border-purple-500/20"
+                : "bg-white border border-purple-100"
+            }`}
+          >
+            <SectionTitle icon={Code}>{t.technologies.title}</SectionTitle>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {Object.entries({
+                [t.technologies.frontend]: technologies.frontend,
+                [t.technologies.backend]: technologies.backend,
+                [t.technologies.tools]: technologies.tools,
+              }).map(([label, items]) => (
+                <div key={label}>
+                  <h3
+                    className={`text-sm font-semibold uppercase tracking-wider mb-3 ${
+                      isDarkMode ? "text-purple-400" : "text-purple-600"
+                    }`}
+                  >
+                    {label}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((tech) => (
+                      <span
+                        key={tech}
+                        className={`text-xs rounded-full px-3 py-1 ${
+                          isDarkMode
+                            ? "bg-purple-900/40 text-purple-200 border border-purple-500/30"
+                            : "bg-purple-100 text-purple-800 border border-purple-200"
+                        }`}
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Row 5 — CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className={`rounded-2xl p-10 shadow-xl text-center ${
               isDarkMode
                 ? "bg-gradient-to-r from-purple-900/30 to-violet-900/30 border border-purple-500/20"
                 : "bg-gradient-to-r from-purple-100 to-violet-100 border border-purple-200"
             }`}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              className="inline-block p-4 rounded-full mb-6 bg-purple-500/20"
-            >
-              <Code size={40} className="text-purple-500" />
-            </motion.div>
-
             <h2
-              className={`text-2xl md:text-3xl font-semibold mb-6 ${
+              className={`text-2xl md:text-3xl font-semibold mb-3 ${
                 isDarkMode ? "text-purple-300" : "text-purple-800"
               }`}
             >
               {t.cta.title}
             </h2>
-
             <p
-              className={`mb-8 max-w-2xl mx-auto ${
+              className={`mb-8 max-w-xl mx-auto text-sm leading-relaxed ${
                 isDarkMode ? "text-purple-200/80" : "text-purple-900/80"
               }`}
             >
               {t.cta.text}
             </p>
-
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 flex-wrap">
               <SocialButton
                 href="https://github.com/WillensonG"
-                icon={<Github size={24} />}
-                label="GitHub Profile"
+                icon={<Github size={22} />}
+                label="GitHub"
               />
               <SocialButton
                 href="https://www.linkedin.com/in/willens%C3%B3n-rafael-guill%C3%A9n-inirio/"
-                icon={<Linkedin size={24} />}
-                label="LinkedIn Profile"
+                icon={<Linkedin size={22} />}
+                label="LinkedIn"
               />
               <SocialButton
                 href="mailto:Willensonr.g@gmail.com"
-                icon={<Mail size={24} />}
-                label="Email Contact"
+                icon={<Mail size={22} />}
+                label="Email"
               />
               <SocialButton
                 href="https://www.instagram.com/web_solutionsrd/"
-                icon={<Instagram size={24} />}
-                label="Instagram Profile"
+                icon={<Instagram size={22} />}
+                label="Instagram"
               />
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer Simple */}
+      {/* Footer */}
       <footer
         className={`py-8 border-t ${
           isDarkMode
-            ? "border-purple-900/30 text-purple-300/60"
-            : "border-purple-100 text-purple-800/60"
+            ? "border-purple-900/30 text-purple-300/50"
+            : "border-purple-100 text-purple-800/50"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <p>
-            © {new Date().getFullYear()} Willensón Rafael Guillén Inirio.{" "}
-            {language === "es"
-              ? "Todos los derechos reservados."
-              : "All rights reserved."}
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-sm">
+          © {new Date().getFullYear()} Willensón Rafael Guillén Inirio.{" "}
+          {language === "es"
+            ? "Todos los derechos reservados."
+            : "All rights reserved."}
         </div>
       </footer>
     </div>
